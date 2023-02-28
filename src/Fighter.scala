@@ -1,3 +1,3 @@
-class Fighter {
-
-}
+class Fighter
+  
+  
