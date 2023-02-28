@@ -1,21 +1,31 @@
 
-abstract class Character:
+abstract class Character(protected val name: String, protected var health: Int, protected var armour: Int, protected val toHit: Int,
+                         protected val damagePerAttack: Int, protected val shield: Int):
 
-  // base characteristics of the Character class such as
-  var name: String
-  var health: Int
-  var armour: Int
-  var toHit: Int
-  var damagePerAttack: Int
+  
+  var damageDone: Int = 0
 
-  def isDead: Boolean
-  def damageDoneInTotal: Int
-  def currentHealth: Int
+  def isDead: Boolean = health <= 0
+  def damageDoneInTotal: Int = damageDone
+  def currentHealth: Int = health
 
-  def attack(monster: Monster): Unit
-  def defend(): Unit
-  def takeDamage(damage: Int, toHit: Int): Unit
-  def beHealed(healingDone: Int): Unit
+  def attack(character: Character): Unit =
+    if character.takeDamage(damagePerAttack, toHit) then
+      damageDone += damagePerAttack
 
+  def defend(): Unit = ??? // while roundCount = currentRoundCount, armour = +shield
 
+  def takeDamage(damage: Int, toHit: Int): Boolean =
+    if armour <= toHit then
+      health += -damage
+      true
+    else
+      false
+
+  def beHealed(healingDone: Int): Unit =
+    health += healingDone
+    
+  def modifyForNewWave(): Unit = ??? // Changes the character's stats when a new wave is started 
+
+end Character
 
