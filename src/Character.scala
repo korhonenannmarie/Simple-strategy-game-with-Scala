@@ -1,13 +1,19 @@
 
-abstract class Character(protected val name: String, protected var health: Int, protected var armour: Int, protected val toHit: Int,
-                         protected val damagePerAttack: Int, protected val shield: Int):
+abstract class Character(protected val name: String, protected val health: Int, protected var armour: Int, protected val toHit: Int,
+                         protected var damagePerAttack: Int, protected val shield: Int):
 
-  
-  var damageDone: Int = 0
+
+  protected var damageDone: Int = 0 // how much the Character has done damage in the wave
+
+  protected val armourMod: Int
+  protected val healthMod: Int
+  protected val damageMod: Int
+
+  protected var currentHealth = health
+
 
   def isDead: Boolean = health <= 0
   def damageDoneInTotal: Int = damageDone
-  def currentHealth: Int = health
 
   def attack(character: Character): Unit =
     if character.takeDamage(damagePerAttack, toHit) then
@@ -17,15 +23,21 @@ abstract class Character(protected val name: String, protected var health: Int, 
 
   def takeDamage(damage: Int, toHit: Int): Boolean =
     if armour <= toHit then
-      health += -damage
+      currentHealth += -damage
       true
     else
       false
 
   def beHealed(healingDone: Int): Unit =
-    health += healingDone
-    
-  def modifyForNewWave(): Unit = ??? // Changes the character's stats when a new wave is started 
+    currentHealth += healingDone
+
+  def modifyForNewWave(): Unit =
+    damagePerAttack += damageMod
+    currentHealth += health + (healthMod * damageDone) // nope, this does not work...
+    // when new waves are done it makes everything difficult
+    armour += armourMod * damageDone
+    damageDone = 0
+
 
 end Character
 
