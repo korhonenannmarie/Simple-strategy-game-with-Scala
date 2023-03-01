@@ -1,3 +1,3 @@
-class Mage extends Character(name, health, armour, toHit, damagePerAttack, shield):
+class Mage extends Character:
 
   

@@ -8,3 +8,9 @@ class Game:
   private var roundIsOver: Boolean = false
   private var waveIsOver: Boolean = false
 
+  private def setCharacters = ???
+  private def newWave = ???
+  private def playRound = ???
+  private def usersTurn = ???
+  def playGame = ???
+  def currentRound = roundCount

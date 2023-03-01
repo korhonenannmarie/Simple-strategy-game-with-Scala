@@ -19,7 +19,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     if character.takeDamage(damagePerAttack, toHit) then
       damageDone += damagePerAttack
 
-  def defend(): Unit = ??? // while roundCount = currentRoundCount, armour = +shield
+  def defend(): Unit = ???
 
   def takeDamage(damage: Int, toHit: Int): Boolean =
     if armour <= toHit then
