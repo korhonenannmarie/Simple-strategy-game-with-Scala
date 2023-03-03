@@ -12,5 +12,16 @@ class Game:
   private def newWave = ???
   private def playRound = ???
   private def usersTurn = ???
-  def playGame = ???
+  private def monstersTurn = ???
+
+  def playGame() =
+    while !isOver do
+      newWave
+      while !waveIsOver do
+        playRound
+        roundCount += 1
+
+
   def currentRound = roundCount
+
+  def reset(character: Character) = ???

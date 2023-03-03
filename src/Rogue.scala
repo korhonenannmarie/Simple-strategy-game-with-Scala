@@ -1,3 +1,1 @@
-class Rogue {
-
-}
+class Rogue extends Character:
