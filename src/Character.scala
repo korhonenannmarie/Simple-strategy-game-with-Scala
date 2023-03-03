@@ -48,8 +48,11 @@ abstract class Character(protected val name: String, protected val health: Int, 
   // method called by Mage class when healing
   def beHealed(healingDone: Int): Unit =
     if this.isDead then
-      currentHealth = 0
-    currentHealth += healingDone
+      currentHealth = healingDone
+    else if healingDone + currentHealth >= startingHealth then
+      currentHealth = startingHealth
+    else
+      currentHealth += healingDone
 
   // method called by Game to raise character's health, armour etc.
   def modifyForNewWave(): Unit =
