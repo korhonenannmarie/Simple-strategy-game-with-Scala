@@ -17,12 +17,7 @@ class Game:
   private def usersTurn = ???
   private def monstersTurn = ???
 
-  def playTurn(command: String) = 
-    val action = Action(command)
-    val outcomeReport = action.execute(???)
-    if outcomeReport.isDefined then
-      this.roundCount += 1
-    outcomeReport.getOrElse(s"Unknown command: \"$command\".")
+  def playTurn(command: String) = ???
     
   def welcomeMessage = ???
   
@@ -41,3 +36,4 @@ class Game:
       case "yes" => "Whoop"
       case "no" => "alright nope"
       case other => None
+      

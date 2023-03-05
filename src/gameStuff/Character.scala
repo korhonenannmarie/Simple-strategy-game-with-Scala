@@ -28,14 +28,16 @@ abstract class Character(protected val name: String, protected val health: Int, 
       damageDone += damagePerAttack
 
 
-  private var defending: Boolean = false
+  protected var defending: Boolean = false
+  
   def defeding: Boolean = defending // gameStuff.Game can now call defending without changing it
   // defend: raises this character's armour for one round, and then game resets it back to normal.
   def defend(): Unit =
     armour += shield
     defending = true
   // lowers the defence written in defend
-  def unDefend(): Unit
+  
+  def unDefend(): Unit =
     armour += -shield
     defending = false
 
