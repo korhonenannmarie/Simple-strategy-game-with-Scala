@@ -1,0 +1,14 @@
+5.3.2023
+The project has been started.
+
+Some major changes to the technical plan:
+
+- Monsters are now also characters
+- A lot of the methods in game and UI need to be different. All UI should do is interact with the user.
+- All game logic is in game, all character logic is in character.
+- I've decided to forgo testing for now, since I'm making a test loop in UI to be able to test the game every time I add something
+
+So far skeleton code has been created to Character, but now the focus will be on Game and UserInterface for a while.
+I've spent about 10 hours on the project so far.
+
+The technical plan schedule has already gone out of the window.

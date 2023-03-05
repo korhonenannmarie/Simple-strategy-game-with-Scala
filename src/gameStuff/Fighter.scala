@@ -1,3 +1,5 @@
+package gameStuff
+
 class Fighter
   
   

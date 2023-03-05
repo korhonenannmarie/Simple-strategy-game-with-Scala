@@ -1,3 +1,5 @@
+package gameStuff
+
 
 abstract class Character(protected val name: String, protected val health: Int, protected var armour: Int, protected val toHit: Int,
                          protected var damagePerAttack: Int, protected val shield: Int):
@@ -27,7 +29,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
 
   private var defending: Boolean = false
-  def defeding: Boolean = defending // Game can now call defending without changing it
+  def defeding: Boolean = defending // gameStuff.Game can now call defending without changing it
   // defend: raises this character's armour for one round, and then game resets it back to normal.
   def defend(): Unit =
     armour += shield
@@ -45,7 +47,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     else
       false
 
-  // method called by Mage class when healing
+  // method called by gameStuff.Mage class when healing
   def beHealed(healingDone: Int): Unit =
     if this.isDead then
       currentHealth = healingDone
@@ -54,7 +56,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     else
       currentHealth += healingDone
 
-  // method called by Game to raise character's health, armour etc.
+  // method called by gameStuff.Game to raise character's health, armour etc.
   def modifyForNewWave(): Unit =
     ???
 

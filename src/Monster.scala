@@ -1,4 +1,0 @@
-class Monster extends Character:
-  
-  
-  
