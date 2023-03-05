@@ -2,7 +2,7 @@ package gameStuff
 import gameStuff.Game
 import scala.io.StdIn.readLine
 
-object UserInterface:
+object UserInterface extends App:
   private val game = Game()
   this.run()
   

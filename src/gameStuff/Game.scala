@@ -32,7 +32,8 @@ class Game:
 
   def reset(character: Character) = ???
   
-  def isOver: Boolean = ???
+  def isOver: Boolean =
+    roundCount >= 10
   
   def testTurn(command: String) =
     val input = command.trim.toLowerCase
