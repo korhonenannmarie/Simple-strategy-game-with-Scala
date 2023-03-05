@@ -1,0 +1,3 @@
+
+
+val characterBaseHealth = 10
