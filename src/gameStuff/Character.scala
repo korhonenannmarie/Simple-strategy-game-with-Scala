@@ -59,6 +59,8 @@ abstract class Character(protected val name: String, protected val health: Int, 
   // method called by gameStuff.Game to raise character's health, armour etc.
   def modifyForNewWave(): Unit =
     ???
+    
+  def rest(): String = "You rest for a while. Better get a move on, though. Dave-try could be in trouble!"
 
 
 end Character

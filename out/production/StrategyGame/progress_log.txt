@@ -8,4 +8,7 @@ Some major changes to the technical plan:
 - All game logic is in game, all character logic is in character.
 - I've decided to forgo testing for now, since I'm making a test loop in UI to be able to test the game every time I add something
 
-So far I'v
+So far skeleton code has been created to Character, but now the focus will be on Game and UserInterface for a while.
+I've spent about 10 hours on the project so far.
+
+The technical plan schedule has already gone out of the window.

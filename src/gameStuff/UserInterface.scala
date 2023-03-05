@@ -1,14 +1,16 @@
 package gameStuff
 import gameStuff.Game
+import scala.io.StdIn.readLine
 
 object UserInterface:
   private val game = Game()
   this.run()
   
   private def run() =
-    println(this.game.welcomeMessage)
-    while !this.game.isOver do
-      this.game.playGame()
-    println("\n" + this.game.goodbyeMessage)
+    while !game.isOver do
+      val command = readLine("\nCommand:")
+      val turnReport = this.game.testTurn(command)
+      if turnReport != None then
+        println(turnReport)
     
 end UserInterface
