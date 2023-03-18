@@ -5,12 +5,12 @@ import scala.io.StdIn.readLine
 object UserInterface extends App:
   private val game = Game()
   this.testRun()
-  
+
+  private def run() =
+    game.playGame()
+
   private def testRun() =
-    while !game.isOver do
-      val command = readLine("\nCommand:")
-      val turnReport = this.game.testTurn(command)
-      if turnReport != None then
-        println(turnReport)
+    game.testPlayGame()
+
         
 end UserInterface

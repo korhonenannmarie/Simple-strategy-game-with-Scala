@@ -10,3 +10,5 @@ val mageArmour = 10
 val mageToHit = 10
 val mageDamage = 10
 val mageShield = 10
+
+val maxWave = 10
