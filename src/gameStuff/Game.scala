@@ -11,15 +11,15 @@ class Game:
   private var highScores = Buffer()
   private var roundIsOver: Boolean = false
   private var thisWaveIsOver: Boolean = false
- 
+
   def currentRound = roundCount
   def waveIsOver = thisWaveIsOver
-  
+
   val mage = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
+  val fighter = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
+  val rogue = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
 
-
-  
-  def playGame() = 
+  def playGame() =
     while !this.isOver do
       this.welcomeMessage
       for wave <- 0 until maxWave do
@@ -31,11 +31,11 @@ class Game:
             this.monstersTurn()
         this.newWave()
     this.goodbyeMessage
-  
-  def monstersTurn() =
+
+  def monstersTurn() = // missing a lot of monster logic
     roundCount += 1
 
-  def playTurn(command: String): String = 
+  def playTurn(command: String): String =
     val commandText = command.trim.toLowerCase
     val actor       = commandText.takeWhile( _ != ' ' )
     val action = Action(command)
@@ -43,24 +43,25 @@ class Game:
     val doingStuff = action.execute(
       actor match
         case "mage" => mage)
-      
+
     var outcomeReport = "Stuff"
     outcomeReport
 
-  def welcomeMessage = ???
+  def welcomeMessage = "Welcome to the game"
   
-  def goodbyeMessage = ???
+  def goodbyeMessage = "Goodbye for now"
+
 
   def reset(character: Character) = ???
   
   def isOver: Boolean = false // to be implemented
 
   def newWave() = ???
-  
-  
-  
+
+
+
   // for testing the logic of my program:
-  
+
   def testTurn(command: String) =
     val input = command.trim.toLowerCase
     input match
