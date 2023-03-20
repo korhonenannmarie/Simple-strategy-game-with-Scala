@@ -13,3 +13,12 @@ I've spent about 10 hours on the project so far.
 
 The technical plan schedule has already gone out of the window.
 
+20.3.
+
+Progress has been very slow, I'm covered in work and seem to find very little time to work on this.
+
+I have a basic functionality of the UI, and I'm making slow progress with the game logic and the Character class.
+The next big project will be the Monster class.
+
+I've worked on this project for about 10 hours in the last 2 weeks. It's been a little tough, and I'm very worried about
+the deadline.
