@@ -37,14 +37,14 @@ class Game:
 
   def monstersTurn() = // missing a lot of monster logic
     roundCount += 1
-    
-    
+
+
   def setMonsters() = ???
 
   def playTurn(command: String): Option[String] =
     val commandText = command.trim.toLowerCase
     val actor       = commandText.takeWhile( _ != ' ' )
-    val action = Action(command)
+    val action      = Action(command)
 
     val doingStuff = action.execute(
       actor match
@@ -82,6 +82,6 @@ class Game:
   def testPlayGame() =
     while !this.isOver do
       val command = readLine("\nCommand:")
-      val turnReport = this.testTurn(command)
-      if turnReport != None then
-        println(turnReport)
+      val turnReport = this.playTurn(command)
+      if turnReport.nonEmpty then
+         println(turnReport)
