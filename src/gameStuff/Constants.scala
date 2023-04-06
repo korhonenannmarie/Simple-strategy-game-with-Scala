@@ -35,3 +35,8 @@ val rogueArmourMod = 10
 val rogueHealthMod = 10
 val rogueDamageMod = 10
 
+val monsterName = "monster dude"
+val monsterArmourMod = 10
+val monsterHealthMod = 10
+val monsterDamageMod = 10
+

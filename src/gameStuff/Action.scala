@@ -10,4 +10,5 @@ class Action(input: String):
   def execute(actor: Character): Option[String] =
     this.verb match
       // case attack => Some(actor.attack(target))
+      case rest => Some(actor.rest())
       case other => None

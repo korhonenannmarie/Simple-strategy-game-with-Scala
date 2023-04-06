@@ -62,7 +62,10 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def modifyForNewWave(): Unit =
     ???
     
-  def rest(): String = "You rest for a while. Better get a move on, though. Dave-try could be in trouble!"
+  def rest(): String = "You rest for a while."
+
+  def currentStats(): String =
+    s"$name has a health of $currentHealth/$startingHealth."
 
 
 end Character

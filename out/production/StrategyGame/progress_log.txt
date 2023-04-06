@@ -22,3 +22,11 @@ The next big project will be the Monster class.
 
 I've worked on this project for about 10 hours in the last 2 weeks. It's been a little tough, and I'm very worried about
 the deadline.
+
+3.4.
+There has not really been any progress since last time.
+However, I do have a game plan this time.
+
+I have about two to three weeks to finish the project by the deadline. I'm going to focus on finishing the game functionality first along
+with the Character class. Afterwards I will finish my Monster class and the game will be pretty much finished. I am going to omit my
+testing plans and will mainly focus on testing using the UI.

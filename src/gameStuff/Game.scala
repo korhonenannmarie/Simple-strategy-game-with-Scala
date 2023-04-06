@@ -15,9 +15,12 @@ class Game:
   def currentRound = roundCount
   def waveIsOver = thisWaveIsOver
 
-  val mage = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
-  val fighter = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
-  val rogue = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
+  val mage: Character = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
+  val fighter: Character = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
+  val rogue: Character = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
+
+  val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
+  val Monsters: Buffer[Monster] = ???
 
   def playGame() =
     while !this.isOver do
@@ -34,31 +37,37 @@ class Game:
 
   def monstersTurn() = // missing a lot of monster logic
     roundCount += 1
+    
+    
+  def setMonsters() = ???
 
-  def playTurn(command: String): String =
+  def playTurn(command: String): Option[String] =
     val commandText = command.trim.toLowerCase
     val actor       = commandText.takeWhile( _ != ' ' )
     val action = Action(command)
 
     val doingStuff = action.execute(
       actor match
-        case "mage" => mage)
+        case "mage" => mage
+        case "fighter" => fighter
+        case "rogue" => rogue)
 
-    var outcomeReport = "Stuff"
-    outcomeReport
+    var outcomeReport = s"${mage.currentStats()} \n ${fighter.currentStats()} \n ${rogue.currentStats()}"
+
+    if doingStuff.nonEmpty then
+      Some(outcomeReport)
+    else
+      None
 
   def welcomeMessage = "Welcome to the game"
   
   def goodbyeMessage = "Goodbye for now"
-
-
-  def reset(character: Character) = ???
   
   def isOver: Boolean = false // to be implemented
 
-  def newWave() = ???
-
-
+  def newWave(): Unit =
+    Characters.foreach(_.modifyForNewWave())
+    Monsters.foreach(_.modifyForNewWave())
 
   // for testing the logic of my program:
 
