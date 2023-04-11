@@ -7,8 +7,8 @@ class Action(input: String):
   private val verb        = commandText.drop(actor.length).takeWhile( _ != ' ' ).trim
   private val target      = commandText.drop(actor.length + verb.length).trim
   
-  def execute(actor: Character): Option[String] =
+  def execute(actor: Character) =
     this.verb match
       // case attack => Some(actor.attack(target))
-      case rest => Some(actor.rest())
+      case rest => actor.rest()
       case other => None

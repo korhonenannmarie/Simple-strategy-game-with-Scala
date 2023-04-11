@@ -28,8 +28,8 @@ class Game:
       for wave <- 0 until maxWave do
         while !this.waveIsOver do
           val command = readLine()
-          val turnReport: String = this.playTurn(command).get
-          if turnReport.nonEmpty then
+          val turnReport = this.playTurn(command)
+          if turnReport != None then
             println(turnReport)
             this.monstersTurn()
         this.newWave()
@@ -41,7 +41,7 @@ class Game:
 
   def setMonsters() = ???
 
-  def playTurn(command: String): Option[String] =
+  def playTurn(command: String) =
     val commandText = command.trim.toLowerCase
     val actor       = commandText.takeWhile( _ != ' ' )
     val action      = Action(command)
@@ -52,10 +52,10 @@ class Game:
         case "fighter" => fighter
         case "rogue" => rogue)
 
-    var outcomeReport = s"$doingStuff" + s"${mage.currentStats()} \n ${fighter.currentStats()} \n ${rogue.currentStats()}"
+    var outcomeReport = s"$doingStuff \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}"
 
-    if doingStuff.nonEmpty then
-      Some(outcomeReport)
+    if doingStuff != None then
+      outcomeReport
     else
       None
   end playTurn
@@ -84,5 +84,5 @@ class Game:
     while !this.isOver do
       val command = readLine("\nCommand:")
       val turnReport = this.playTurn(command)
-      if turnReport.nonEmpty then
+      if turnReport != None then
          println(turnReport)
