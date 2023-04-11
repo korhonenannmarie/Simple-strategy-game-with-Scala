@@ -20,7 +20,7 @@ class Game:
   val rogue: Character = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
 
   val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
-  val Monsters: Buffer[Monster] = ???
+  val Monsters: Buffer[Monster] = Buffer()
 
   def playGame() =
     while !this.isOver do
@@ -28,7 +28,7 @@ class Game:
       for wave <- 0 until maxWave do
         while !this.waveIsOver do
           val command = readLine()
-          val turnReport = this.playTurn(command)
+          val turnReport: String = this.playTurn(command).get
           if turnReport.nonEmpty then
             println(turnReport)
             this.monstersTurn()
@@ -52,12 +52,13 @@ class Game:
         case "fighter" => fighter
         case "rogue" => rogue)
 
-    var outcomeReport = s"${mage.currentStats()} \n ${fighter.currentStats()} \n ${rogue.currentStats()}"
+    var outcomeReport = s"$doingStuff" + s"${mage.currentStats()} \n ${fighter.currentStats()} \n ${rogue.currentStats()}"
 
     if doingStuff.nonEmpty then
       Some(outcomeReport)
     else
       None
+  end playTurn
 
   def welcomeMessage = "Welcome to the game"
   
