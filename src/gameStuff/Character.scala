@@ -23,9 +23,12 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def damageDoneInTotal: Int = damageDone   // a function the game can call without being able to modify it
 
   // attack: calls another character's takeDamage method, then adds the damage done to this character's damageDone counter.
-  def attack(character: Character): Unit =
-    if character.takeDamage(damagePerAttack, toHit) then
+  def attack(character: Character): String =
+    if character.takeDamage(this.damagePerAttack, this.toHit) then
       damageDone += damagePerAttack
+      s"${character.name} takes $damagePerAttack damage."
+    else
+      "The attack does not hit."
 
 
   protected var defending: Boolean = false
@@ -66,6 +69,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
   def currentStats(): String =
     s"$name has a health of $currentHealth/$startingHealth."
+    
 
 
 end Character

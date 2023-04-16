@@ -24,7 +24,7 @@ class Game:
 
   def playGame() =
     while !this.isOver do
-      this.welcomeMessage
+      println(this.welcomeMessage)
       for wave <- 0 until maxWave do
         while !this.waveIsOver do
           val command = readLine()
@@ -33,7 +33,7 @@ class Game:
             println(turnReport)
             this.monstersTurn()
         this.newWave()
-    this.goodbyeMessage
+    println(this.goodbyeMessage)
 
   def monstersTurn() = // missing a lot of monster logic
     roundCount += 1
@@ -42,23 +42,44 @@ class Game:
   def setMonsters() = ???
 
   def playTurn(command: String) =
+    
     val commandText = command.trim.toLowerCase
-    val actor       = commandText.takeWhile( _ != ' ' )
-    val action      = Action(command)
-
-    val doingStuff = action.execute(
-      actor match
+    val strActor       = commandText.takeWhile( _ != ' ' )
+    val verb        = commandText.drop(strActor.length).takeWhile( _ != ' ' ).trim
+    val strTarget      = commandText.drop(strActor.length + verb.length).trim  
+    
+    val target =
+      strTarget match
         case "mage" => mage
         case "fighter" => fighter
-        case "rogue" => rogue)
-
+        case "rogue" => rogue
+    
+    val actor =
+      strActor match
+        case "mage" => mage
+        case "fighter" => fighter
+        case "rogue" => rogue
+        
+    
+    def execute(actor: Character) =
+      verb match
+        case "rest" => Some(actor.rest())
+        case "attack" => Some(actor.attack(target))
+        case "attackSelf" => Some(actor.attack(actor))
+        case other => None
+    
+    val doingStuff  = execute(actor)   
+    
     var outcomeReport = s"$doingStuff \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}"
 
-    if doingStuff != None then
+    if doingStuff.isDefined then
       outcomeReport
     else
       None
+      
   end playTurn
+
+  
 
   def welcomeMessage = "Welcome to the game"
   
@@ -69,6 +90,14 @@ class Game:
   def newWave(): Unit =
     Characters.foreach(_.modifyForNewWave())
     Monsters.foreach(_.modifyForNewWave())
+
+  def str2character(str: String): Character =
+    str match
+      case "mage" => mage
+      case "fighter" => fighter
+      case "rogue" => rogue
+
+
 
   // for testing the logic of my program:
 
@@ -86,3 +115,4 @@ class Game:
       val turnReport = this.playTurn(command)
       if turnReport != None then
          println(turnReport)
+
