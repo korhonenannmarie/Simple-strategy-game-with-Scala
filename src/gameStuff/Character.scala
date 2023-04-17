@@ -62,8 +62,13 @@ abstract class Character(protected val name: String, protected val health: Int, 
       currentHealth += healingDone
 
   // method called by gameStuff.Game to raise character's health, armour etc.
+  
   def modifyForNewWave(): Unit =
-    ???
+    startingHealth += (damageDone/2) * healthMod
+    currentHealth = startingHealth
+    armour += armourMod
+    damagePerAttack += damageMod
+    damageDone = 0
     
   def rest(): String = "You rest for a while."
 

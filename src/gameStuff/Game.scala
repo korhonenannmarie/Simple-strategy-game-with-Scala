@@ -10,11 +10,13 @@ class Game:
   private var currentScore: Int = 0
   private var highScores = Buffer()
   private var roundIsOver: Boolean = false
-  private var thisWaveIsOver: Boolean = false
+  private var wavesAreDone: Boolean = false
+  private var waveCount: Int = 0
 
   def currentRound = roundCount
-  def waveIsOver = thisWaveIsOver
-  def isOver: Boolean = false // to be implemented
+
+  def waveIsOver: Boolean = Monsters.forall(mons => mons.isDead)
+  def isOver: Boolean = Characters.forall(char => char.isDead) || waveCount == maxWave
 
   val mage: Character = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
   val fighter: Character = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
@@ -26,15 +28,14 @@ class Game:
   def playGame() =
     println(this.welcomeMessage)
     while !this.isOver do
-      for wave <- 0 until maxWave do
-      for wave <- 0 until maxWave do
-        while !this.waveIsOver do
-          val command = readLine("\nCommand:")
-          val turnReport = this.playTurn(command)
-          if turnReport.isDefined then
-            println(turnReport.get)
-            this.monstersTurn()
-        this.newWave()
+      while !this.waveIsOver do
+        val command = readLine("\nCommand:")
+        val turnReport = this.playTurn(command)
+        if turnReport.isDefined then
+          println(turnReport.get)
+          this.monstersTurn()
+      waveCount += 1
+      this.newWave()
     println(this.goodbyeMessage)
 
   def monstersTurn() = // missing a lot of monster logic
@@ -50,7 +51,7 @@ class Game:
     val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
     val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
     
-    val target: Character = str2character(strTarget).get
+    val target: Character = str2character(strTarget).get // Fix the exception stuff!
     val actor: Character  = str2character(strActor).get
 
     def execute(actor: Character) =
@@ -105,8 +106,11 @@ class Game:
   def testPlayGame() =
     println(this.welcomeMessage)
     while !this.isOver do
-      val command = readLine("\nCommand:")
-      val turnReport = this.playTurn(command)
-      if turnReport.isDefined then
-        println(turnReport.get)
+      while !this.waveIsOver do
+        val command = readLine("\nCommand:")
+        val turnReport = this.playTurn(command)
+        if turnReport.isDefined then
+          println(turnReport.get)
+      waveCount += 1
+      this.newWave()
     println(this.goodbyeMessage)

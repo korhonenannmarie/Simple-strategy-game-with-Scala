@@ -8,6 +8,7 @@ val mageArmour = 10
 val mageToHit = 10
 val mageDamage = 5
 val mageShield = 10
+val mageHealingDone = 10
 
 val mageArmourMod = 10
 val mageHealthMod = 10

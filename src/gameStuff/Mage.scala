@@ -9,3 +9,4 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
   val armourMod = mageArmourMod
   val healthMod = mageHealthMod
   val damageMod = mageDamageMod
+  val healingDone = mageHealingDone
