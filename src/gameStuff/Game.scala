@@ -14,6 +14,7 @@ class Game:
 
   def currentRound = roundCount
   def waveIsOver = thisWaveIsOver
+  def isOver: Boolean = false // to be implemented
 
   val mage: Character = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
   val fighter: Character = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
@@ -23,14 +24,15 @@ class Game:
   val Monsters: Buffer[Monster] = Buffer()
 
   def playGame() =
+    println(this.welcomeMessage)
     while !this.isOver do
-      println(this.welcomeMessage)
+      for wave <- 0 until maxWave do
       for wave <- 0 until maxWave do
         while !this.waveIsOver do
-          val command = readLine()
+          val command = readLine("\nCommand:")
           val turnReport = this.playTurn(command)
-          if turnReport != None then
-            println(turnReport)
+          if turnReport.isDefined then
+            println(turnReport.get)
             this.monstersTurn()
         this.newWave()
     println(this.goodbyeMessage)
@@ -41,26 +43,16 @@ class Game:
 
   def setMonsters() = ???
 
-  def playTurn(command: String) =
+  def playTurn(command: String): Option[String] =
     
-    val commandText = command.trim.toLowerCase
-    val strActor       = commandText.takeWhile( _ != ' ' )
-    val verb        = commandText.drop(strActor.length).takeWhile( _ != ' ' ).trim
-    val strTarget      = commandText.drop(strActor.length + verb.length).trim  
+    val commandText       = command.trim.toLowerCase
+    val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
+    val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
+    val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
     
-    val target =
-      strTarget match
-        case "mage" => mage
-        case "fighter" => fighter
-        case "rogue" => rogue
-    
-    val actor =
-      strActor match
-        case "mage" => mage
-        case "fighter" => fighter
-        case "rogue" => rogue
-        
-    
+    val target: Character = str2character(strTarget).get
+    val actor: Character  = str2character(strActor).get
+
     def execute(actor: Character) =
       verb match
         case "rest" => Some(actor.rest())
@@ -68,9 +60,9 @@ class Game:
         case "attackSelf" => Some(actor.attack(actor))
         case other => None
     
-    val doingStuff  = execute(actor)   
+    val doingStuff  = execute(actor)
     
-    var outcomeReport = s"$doingStuff \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}"
+    val outcomeReport = Some(s"${doingStuff.get} \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}")
 
     if doingStuff.isDefined then
       outcomeReport
@@ -79,40 +71,42 @@ class Game:
       
   end playTurn
 
-  
 
-  def welcomeMessage = "Welcome to the game"
+  def welcomeMessage: String = welcome
   
-  def goodbyeMessage = "Goodbye for now"
+  def goodbyeMessage: String = goodbye
   
-  def isOver: Boolean = false // to be implemented
-
   def newWave(): Unit =
     Characters.foreach(_.modifyForNewWave())
     Monsters.foreach(_.modifyForNewWave())
 
-  def str2character(str: String): Character =
+  def str2character(str: String): Option[Character] =
     str match
-      case "mage" => mage
-      case "fighter" => fighter
-      case "rogue" => rogue
+      case "mage" => Some(mage)
+      case "fighter" => Some(fighter)
+      case "rogue" => Some(rogue)
+      case other => None
 
 
 
   // for testing the logic of my program:
 
   def testTurn(command: String) =
-    val input = command.trim.toLowerCase
-    input match
-      case "yes" => "Whoop"
-      case "no" => "alright nope"
-      case other => None
+
+    val commandText: String       = command.trim.toLowerCase
+    val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
+    val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
+    val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
+
+    val target: Character         = str2character(strTarget).get
+    val actor: Character          = str2character(strActor).get
 
 
   def testPlayGame() =
+    println(this.welcomeMessage)
     while !this.isOver do
       val command = readLine("\nCommand:")
       val turnReport = this.playTurn(command)
-      if turnReport != None then
-         println(turnReport)
-
+      if turnReport.isDefined then
+        println(turnReport.get)
+    println(this.goodbyeMessage)

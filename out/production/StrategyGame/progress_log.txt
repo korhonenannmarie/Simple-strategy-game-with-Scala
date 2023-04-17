@@ -30,3 +30,8 @@ However, I do have a game plan this time.
 I have about two to three weeks to finish the project by the deadline. I'm going to focus on finishing the game functionality first along
 with the Character class. Afterwards I will finish my Monster class and the game will be pretty much finished. I am going to omit my
 testing plans and will mainly focus on testing using the UI.
+
+16.4.
+Finally, some progress.
+I'm going to try to meet the first deadline, even though I got an extension to the 10th of May. I've been working on
+getting the game interaction working.

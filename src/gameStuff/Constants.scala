@@ -40,3 +40,6 @@ val monsterArmourMod = 10
 val monsterHealthMod = 10
 val monsterDamageMod = 10
 
+val welcome = "Welcome to the game"
+val goodbye = "Goodbye for now"
+
