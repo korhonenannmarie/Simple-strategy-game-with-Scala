@@ -35,14 +35,16 @@ abstract class Character(protected val name: String, protected val health: Int, 
   
   def defeding: Boolean = defending // gameStuff.Game can now call defending without changing it
   // defend: raises this character's armour for one round, and then game resets it back to normal.
-  def defend(): Unit =
+  def defend(): String =
     armour += shield
     defending = true
+    s"the ${this.name} raises their shield for the turn. Your armour is increased."
   // lowers the defence written in defend
   
-  def unDefend(): Unit =
-    armour += -shield
-    defending = false
+  def resetForNewTurn(): Unit =
+    if defending then
+      armour += -shield
+      defending = false
 
   // method called by another class in different types of attacks
   def takeDamage(damage: Int, toHit: Int): Boolean =
@@ -73,7 +75,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def rest(): String = "You rest for a while."
 
   def currentStats(): String =
-    s"$name has a health of $currentHealth/$startingHealth."
+    s"$name has a health of $currentHealth/$startingHealth. Their current armour is $armour."
     
 
 

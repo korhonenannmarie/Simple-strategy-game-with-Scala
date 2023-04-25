@@ -36,10 +36,17 @@ val rogueArmourMod = 10
 val rogueHealthMod = 10
 val rogueDamageMod = 10
 
-val monsterName = "monster"
+val monsterHealth = 10
+val monsterArmour = 10
+val monsterToHit = 10
+val monsterDamage = 10
+val monsterShield = 10
+
 val monsterArmourMod = 10
 val monsterHealthMod = 10
 val monsterDamageMod = 10
+
+
 
 val welcome = "Welcome to the game"
 val goodbye = "Goodbye for now"

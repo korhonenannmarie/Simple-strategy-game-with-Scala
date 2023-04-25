@@ -4,6 +4,7 @@ import gameStuff.Character
 import java.awt.Image
 import scala.collection.mutable.Buffer
 import scala.io.StdIn.readLine
+import scala.util.Random
 class Game:
 
   private var roundCount: Int = 0
@@ -15,7 +16,7 @@ class Game:
 
   def currentRound = roundCount
 
-  def waveIsOver: Boolean = Monsters.forall(mons => mons.isDead)
+  def waveIsOver: Boolean = false // Monsters.forall(mons => mons.isDead)
   def isOver: Boolean = Characters.forall(char => char.isDead) || waveCount == maxWave
 
   val mage: Character = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
@@ -29,36 +30,44 @@ class Game:
     println(this.welcomeMessage)
     while !this.isOver do
       while !this.waveIsOver do
+        println(setMonsters())
         val command = readLine("\nCommand:")
         val turnReport = this.playTurn(command)
         if turnReport.isDefined then
           println(turnReport.get)
           this.monstersTurn()
+          Characters.foreach(_.resetForNewTurn())
       waveCount += 1
       this.newWave()
     println(this.goodbyeMessage)
+
 
   def monstersTurn() = // missing a lot of monster logic
     roundCount += 1
 
 
-  def setMonsters() = ???
+  def setMonsters() =
+    val a: Int = Random.between(1,4)
+    for i <- 1 to a do
+      val m = Monster(s"monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield)
+      Monsters += m
+    s"There are $a monsters here."
+
 
   def playTurn(command: String): Option[String] =
     
-    val commandText       = command.trim.toLowerCase
+    val commandText               = command.trim.toLowerCase
     val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
     val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
     val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
     
-    val target: Character = str2character(strTarget).get // Fix the exception stuff!
+    val target: Character = str2character(strTarget).get
     val actor: Character  = str2character(strActor).get
 
     def execute(actor: Character) =
       verb match
         case "rest" => Some(actor.rest())
         case "attack" => Some(actor.attack(target))
-        case "attackSelf" => Some(actor.attack(actor))
         case other => None
     
     val doingStuff  = execute(actor)
@@ -89,28 +98,50 @@ class Game:
       case other => None
 
 
-
   // for testing the logic of my program:
 
-  def testTurn(command: String) =
+  def testingInfo(): Unit =
+    Characters.foreach(_.currentStats())
 
-    val commandText: String       = command.trim.toLowerCase
+  def testTurn(command: String) =
+    require(command.split(" ").length == 3, 
+      "Your command should be formatted 'actor' 'action' 'target'")
+    val commandText               = command.trim.toLowerCase
     val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
     val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
     val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
+    
+    val target: Character = str2character(strTarget).get
+    val actor: Character  = str2character(strActor).get
 
-    val target: Character         = str2character(strTarget).get
-    val actor: Character          = str2character(strActor).get
+    def execute(actor: Character) =
+      verb match
+        case "rest" => Some(actor.rest())
+        case "attack" => Some(actor.attack(target))
+        case other => None
+    
+    val doingStuff  = execute(actor)
+    
+    val outcomeReport = Some(s"${doingStuff.get} \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}")
+
+    if doingStuff.isDefined then
+      outcomeReport
+    else
+      None
+    
 
 
   def testPlayGame() =
     println(this.welcomeMessage)
-    while !this.isOver do
-      while !this.waveIsOver do
-        val command = readLine("\nCommand:")
-        val turnReport = this.playTurn(command)
-        if turnReport.isDefined then
-          println(turnReport.get)
-      waveCount += 1
-      this.newWave()
-    println(this.goodbyeMessage)
+      while !this.isOver do
+        while !this.waveIsOver do
+          println(setMonsters())
+          val command = readLine("\nCommand:")
+          val turnReport = this.playTurn(command)
+          if turnReport.isDefined then
+            println(turnReport.get)
+            this.monstersTurn()
+            Characters.foreach(_.resetForNewTurn())
+        waveCount += 1
+        this.newWave()
+      println(this.goodbyeMessage)
