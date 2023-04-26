@@ -10,3 +10,7 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
   val healthMod = mageHealthMod
   val damageMod = mageDamageMod
   val healingDone = mageHealingDone
+
+  def heal(target: Character): String =
+    val a = target.beHealed(healingDone)
+    s"${target.characterName} is healed $a health points."

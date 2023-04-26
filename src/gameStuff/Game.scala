@@ -7,26 +7,27 @@ import scala.io.StdIn.readLine
 import scala.util.Random
 class Game:
 
-  private var roundCount: Int = 0
-  private var currentScore: Int = 0
-  private var highScores = Buffer()
-  private var roundIsOver: Boolean = false
-  private var wavesAreDone: Boolean = false
-  private var waveCount: Int = 0
+  private var roundCount: Int         = 0
+  private var currentScore: Int       = 0
+  private var highScores: Buffer[Int] = Buffer()
+  private var roundIsOver: Boolean    = false
+  private var wavesAreDone: Boolean   = false
+  private var waveCount: Int          = 0
 
-  def currentRound = roundCount
+  def currentRound: Int = roundCount
+  def currentWave: Int  = waveCount
 
-  def waveIsOver: Boolean = false // Monsters.forall(mons => mons.isDead)
-  def isOver: Boolean = Characters.forall(char => char.isDead) || waveCount == maxWave
+  def waveIsOver: Boolean = Monsters.forall(_.isDead)
+  def isOver: Boolean = Characters.count(_.isDead) == 3 || waveCount == maxWave
 
-  val mage: Character = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
-  val fighter: Character = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
-  val rogue: Character = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
+  val mage: Mage = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
+  val fighter: Fighter = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
+  val rogue: Rogue = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
 
   val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
   val Monsters: Buffer[Monster] = Buffer()
 
-  def playGame() =
+  /** def playGame() =
     println(this.welcomeMessage)
     while !this.isOver do
       while !this.waveIsOver do
@@ -40,9 +41,10 @@ class Game:
       waveCount += 1
       this.newWave()
     println(this.goodbyeMessage)
+  end playGame*/
 
 
-  def monstersTurn() = // missing a lot of monster logic
+  def monstersTurn() =
     roundCount += 1
 
 
@@ -54,7 +56,7 @@ class Game:
     s"There are $a monsters here."
 
 
-  def playTurn(command: String): Option[String] =
+  /** def playTurn(command: String): Option[String] =
     
     val commandText               = command.trim.toLowerCase
     val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
@@ -79,7 +81,7 @@ class Game:
     else
       None
       
-  end playTurn
+  end playTurn **/
 
 
   def welcomeMessage: String = welcome
@@ -90,18 +92,25 @@ class Game:
     Characters.foreach(_.modifyForNewWave())
     Monsters.foreach(_.modifyForNewWave())
 
+
   def str2character(str: String): Option[Character] =
     str match
       case "mage" => Some(mage)
       case "fighter" => Some(fighter)
       case "rogue" => Some(rogue)
+      case "monster1" => Some(Monsters.head)
+      case "monster2" => Some(Monsters(1))
+      case "monster3" => Some(Monsters(2))
       case other => None
 
 
   // for testing the logic of my program before committing it to the main functionality:
 
-  def testingInfo(): Unit =
-    Characters.foreach(_.currentStats())
+  def testingInfo(): String =
+    Characters.map(x => x.currentStats()).mkString + "\n" +
+    Monsters.map(x => x.currentStats()).mkString("") + "\n" +
+    s"$currentRound \n" +
+    s"$currentWave \n"
 
   def testTurn(command: String): Option[String] =
     val commandText               = command.trim.toLowerCase
@@ -110,29 +119,32 @@ class Game:
     val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
 
     val target: Option[Character] =
-      if Characters.contains(strTarget) || Monsters.contains(strTarget) then
+      if Characters.map(_.characterName).contains(strTarget) || Monsters.map(_.characterName).contains(strTarget) then
         str2character(strTarget)
       else
         None
 
     val actor: Option[Character] =
-      if Characters.contains(strActor) then
+      if Characters.map(_.characterName).contains(strActor) then
         str2character(strActor)
       else
         None
 
     def execute(actor: Character): Option[String] =
       verb match
-        case "attack" => Some(actor.attack(target.get))
+        case "attack" if !target.get.isDead => Some(actor.attack(target.get))
+        case "heal"   => Some(mage.heal(target.get))
         case other => None
 
     def noTargetExecute(actor: Character): Option[String] =
       verb match
         case "rest" => Some(actor.rest())
+        case "defend" => Some(actor.defend())
+
         case other => None
     
     val doingStuff =
-      if actor.nonEmpty then
+      if actor.nonEmpty && !(actor.get.isDead) then
         if target.nonEmpty then
           execute(actor.get)
         else
@@ -142,7 +154,7 @@ class Game:
 
     val outcomeReport: Option[String] =
       if doingStuff.isDefined then
-        Some(s"${doingStuff.get} \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}")
+        Some(s"${doingStuff.get}\n" + s"${mage.currentStats()} ${fighter.currentStats()} ${rogue.currentStats()}")
       else
         None
 
@@ -156,6 +168,7 @@ class Game:
       while !this.isOver do
         println(setMonsters())
         while !this.waveIsOver do
+          println(testingInfo())
           val command = readLine("\nCommand:")
           val turnReport = this.testTurn(command)
           if turnReport.nonEmpty then

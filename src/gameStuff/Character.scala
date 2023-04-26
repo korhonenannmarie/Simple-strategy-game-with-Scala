@@ -19,16 +19,16 @@ abstract class Character(protected val name: String, protected val health: Int, 
   protected val healthMod: Int              // ...to calculate how much...
   protected val damageMod: Int              // ...damage, health and armour go up when a new wave starts
 
-  def isDead: Boolean = health <= 0         // character is dead if its health goes below zero
+  def isDead: Boolean = currentHealth <= 0         // character is dead if its health goes to zero or below
   def damageDoneInTotal: Int = damageDone   // a function the game can call without being able to modify it
 
   // attack: calls another character's takeDamage method, then adds the damage done to this character's damageDone counter.
-  def attack(character: Character): String =
-    if character.takeDamage(this.damagePerAttack, this.toHit) then
+  def attack(target: Character): String =
+    if target.takeDamage(this.damagePerAttack, this.toHit) then // should these texts maybe come from a collection of constants?
       damageDone += damagePerAttack
-      s"${character.name} takes $damagePerAttack damage."
+      s"${target.name} takes $damagePerAttack damage.\n"
     else
-      "The attack does not hit."
+      "The attack does not hit.\n"
       
   def characterName: String = this.name
 
@@ -37,10 +37,11 @@ abstract class Character(protected val name: String, protected val health: Int, 
   
   def defeding: Boolean = defending // gameStuff.Game can now call defending without changing it
   // defend: raises this character's armour for one round, and then game resets it back to normal.
+
   def defend(): String =
     armour += shield
     defending = true
-    s"the ${this.name} raises their shield for the turn. Your armour is increased."
+    s"the ${this.name} raises their shield for the turn. Your armour is increased.\n"
   // lowers the defence written in defend
   
   def resetForNewTurn(): Unit =
@@ -51,19 +52,26 @@ abstract class Character(protected val name: String, protected val health: Int, 
   // method called by another class in different types of attacks
   def takeDamage(damage: Int, toHit: Int): Boolean =
     if armour <= toHit then
-      currentHealth += -damage
-      true
+      if currentHealth > 0 then
+        currentHealth += -damage
+        true
+      else
+        false
     else
       false
 
   // method called by gameStuff.Mage class when healing
-  def beHealed(healingDone: Int): Unit =
+  def beHealed(healingDone: Int): Int =
     if this.isDead then
       currentHealth = healingDone
+      healingDone
     else if healingDone + currentHealth >= startingHealth then
+      val a = currentHealth
       currentHealth = startingHealth
+      startingHealth - a
     else
       currentHealth += healingDone
+      healingDone
 
   // method called by gameStuff.Game to raise character's health, armour etc.
   
@@ -74,10 +82,10 @@ abstract class Character(protected val name: String, protected val health: Int, 
     damagePerAttack += damageMod
     damageDone = 0
     
-  def rest(): String = "You rest for a while."
+  def rest(): String = "You rest for a while.\n"
 
   def currentStats(): String =
-    s"$name has a health of $currentHealth/$startingHealth. Their current armour is $armour."
+    s"$name has a health of $currentHealth/$startingHealth. Their current armour is $armour. \n"
     
 
 

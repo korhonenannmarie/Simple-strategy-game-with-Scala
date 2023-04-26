@@ -7,10 +7,10 @@ object UserInterface extends App:
   private val game = Game()
     this.testRun()
 
-  private def run() =
-    game.playGame()
+  //  private def run() =
+  //  game.playGame()
 
-  // for testing purposes
+  //for testing purposes
   private def testRun() =
     game.testPlayGame()
     
