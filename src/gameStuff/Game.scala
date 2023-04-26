@@ -98,50 +98,72 @@ class Game:
       case other => None
 
 
-  // for testing the logic of my program:
+  // for testing the logic of my program before committing it to the main functionality:
 
   def testingInfo(): Unit =
     Characters.foreach(_.currentStats())
 
-  def testTurn(command: String) =
-    require(command.split(" ").length == 3, 
-      "Your command should be formatted 'actor' 'action' 'target'")
+  def testTurn(command: String): Option[String] =
     val commandText               = command.trim.toLowerCase
     val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
     val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
     val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
-    
-    val target: Character = str2character(strTarget).get
-    val actor: Character  = str2character(strActor).get
 
-    def execute(actor: Character) =
+    val target: Option[Character] =
+      if Characters.contains(strTarget) || Monsters.contains(strTarget) then
+        str2character(strTarget)
+      else
+        None
+
+    val actor: Option[Character] =
+      if Characters.contains(strActor) then
+        str2character(strActor)
+      else
+        None
+
+    def execute(actor: Character): Option[String] =
+      verb match
+        case "attack" => Some(actor.attack(target.get))
+        case other => None
+
+    def noTargetExecute(actor: Character): Option[String] =
       verb match
         case "rest" => Some(actor.rest())
-        case "attack" => Some(actor.attack(target))
         case other => None
     
-    val doingStuff  = execute(actor)
-    
-    val outcomeReport = Some(s"${doingStuff.get} \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}")
+    val doingStuff =
+      if actor.nonEmpty then
+        if target.nonEmpty then
+          execute(actor.get)
+        else
+          noTargetExecute(actor.get)
+      else
+        None
 
-    if doingStuff.isDefined then
-      outcomeReport
-    else
-      None
-    
+    val outcomeReport: Option[String] =
+      if doingStuff.isDefined then
+        Some(s"${doingStuff.get} \n" + s"${mage.currentStats()} \n${fighter.currentStats()} \n${rogue.currentStats()}")
+      else
+        None
+
+    outcomeReport
+
+  end testTurn
 
 
   def testPlayGame() =
     println(this.welcomeMessage)
       while !this.isOver do
+        println(setMonsters())
         while !this.waveIsOver do
-          println(setMonsters())
           val command = readLine("\nCommand:")
-          val turnReport = this.playTurn(command)
-          if turnReport.isDefined then
+          val turnReport = this.testTurn(command)
+          if turnReport.nonEmpty then
             println(turnReport.get)
             this.monstersTurn()
             Characters.foreach(_.resetForNewTurn())
+          else
+            println("Something went wrong. Make sure your inputting is correct.")
         waveCount += 1
         this.newWave()
       println(this.goodbyeMessage)

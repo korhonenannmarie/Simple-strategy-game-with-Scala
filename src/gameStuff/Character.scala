@@ -29,6 +29,8 @@ abstract class Character(protected val name: String, protected val health: Int, 
       s"${character.name} takes $damagePerAttack damage."
     else
       "The attack does not hit."
+      
+  def characterName: String = this.name
 
 
   protected var defending: Boolean = false
