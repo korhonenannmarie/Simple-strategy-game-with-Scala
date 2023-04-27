@@ -8,4 +8,4 @@ class Rogue(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack:
   val armourMod = rogueArmourMod
   val healthMod = rogueHealthMod
   val damageMod = rogueDamageMod
-
+  val toHitMod = mageToHitMod

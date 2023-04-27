@@ -1,7 +1,7 @@
 package gameStuff
 
 
-abstract class Character(protected val name: String, protected val health: Int, protected var armour: Int, protected val toHit: Int,
+abstract class Character(protected val name: String, protected val health: Int, protected var armour: Int, protected var toHit: Int,
                          protected var damagePerAttack: Int, protected val shield: Int):
 
 /** name             the name of the character
@@ -11,6 +11,9 @@ abstract class Character(protected val name: String, protected val health: Int, 
  *  damagePerAttack  the amount of damage a regular attack does when it hits
  *  shield           a value that is added to this character's armour when using the defend method */
 
+//todo: change all the action texts to be constants
+//todo: tweak the numbers
+
   protected var damageDone: Int = 0         // amount of damage this character has done in a full game
   protected var currentHealth = health      // current health
   protected var startingHealth = health     // gets reset every new wave
@@ -18,13 +21,16 @@ abstract class Character(protected val name: String, protected val health: Int, 
   protected val armourMod: Int              // these are all used...
   protected val healthMod: Int              // ...to calculate how much...
   protected val damageMod: Int              // ...damage, health and armour go up when a new wave starts
+  protected val toHitMod: Int
 
   def isDead: Boolean = currentHealth <= 0         // character is dead if its health goes to zero or below
   def damageDoneInTotal: Int = damageDone   // a function the game can call without being able to modify it
+  def isInMelee: Boolean = false
+
 
   // attack: calls another character's takeDamage method, then adds the damage done to this character's damageDone counter.
   def attack(target: Character): String =
-    if target.takeDamage(this.damagePerAttack, this.toHit) then // should these texts maybe come from a collection of constants?
+    if target.takeDamage(this.damagePerAttack, this.toHit) && target.isInMelee then // should these texts maybe come from a collection of constants?
       damageDone += damagePerAttack
       s"${target.name} takes $damagePerAttack damage.\n"
     else
@@ -60,7 +66,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     else
       false
 
-  // method called by gameStuff.Mage class when healing
+  // method called by the Mage class when healing
   def beHealed(healingDone: Int): Int =
     if this.isDead then
       currentHealth = healingDone
@@ -73,7 +79,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
       currentHealth += healingDone
       healingDone
 
-  // method called by gameStuff.Game to raise character's health, armour etc.
+  // method called by Game to raise character's health, armour etc.
   
   def modifyForNewWave(): Unit =
     startingHealth += (damageDone/2) * healthMod
@@ -81,9 +87,13 @@ abstract class Character(protected val name: String, protected val health: Int, 
     armour += armourMod
     damagePerAttack += damageMod
     damageDone = 0
+    toHit += (damageDone/2) * toHitMod
     
+    
+  // mainly for testing
   def rest(): String = "You rest for a while.\n"
 
+  // called to let the user know about current stats, will probably be changed later.
   def currentStats(): String =
     s"$name has a health of $currentHealth/$startingHealth. Their current armour is $armour. \n"
     

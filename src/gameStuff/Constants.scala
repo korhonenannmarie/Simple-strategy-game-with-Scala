@@ -10,9 +10,11 @@ val mageDamage = 5
 val mageShield = 10
 val mageHealingDone = 10
 
+
 val mageArmourMod = 10
 val mageHealthMod = 10
 val mageDamageMod = 10
+val mageToHitMod  = 10
 
 val fighterName = "fighter"
 val fighterHealth = 10

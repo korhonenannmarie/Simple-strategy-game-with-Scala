@@ -6,6 +6,6 @@ class Fighter(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   val armourMod = fighterArmourMod
   val healthMod = fighterHealthMod
   val damageMod = fighterDamageMod
-
+  val toHitMod = mageToHitMod
   
   
