@@ -32,7 +32,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def attack(target: Character): String =
     if target.takeDamage(this.damagePerAttack, this.toHit) && target.isInMelee then // should these texts maybe come from a collection of constants?
       damageDone += damagePerAttack
-      s"${target.name} takes $damagePerAttack damage.\n"
+      s"${target.characterName} takes $damagePerAttack damage.\n"
     else
       "The attack does not hit.\n"
       
