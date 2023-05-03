@@ -36,10 +36,11 @@ class Game:
       this.newWave()
       while !this.isOver && !this.waveIsOver do
         val command = readLine("\nCommand:")
-        val turnReport = this.testTurn(command)
+        val turnReport = this.playTurn(command)
         if turnReport.nonEmpty then
           println(turnReport.get)
-          this.monstersTurn()
+          if Monsters.exists(!_.isDead) then
+            this.monstersTurn()
           Characters.foreach(_.resetForNewTurn())
         else
           println("Something went wrong. Make sure your inputting is correct.")
@@ -93,9 +94,10 @@ class Game:
       verb match
         case "attack" if !target.get.isDead => Some(actor.attack(target.get))
         case "heal" if actor.isInstanceOf[Mage]  => Some(actor.asInstanceOf[Mage].heal(target.get))
-        case "crossbow" if actor.isInstanceOf[Rogue] => Some(actor.asInstanceOf[Rogue].crossbow(target.get))
+        case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(actor.asInstanceOf[Rogue].crossbow(target.get))
         case "protect" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
-        case "longbow" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
+        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].protect(target.get))
+        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].fireBall(target.get))
         case other => None
 
     def noTargetExecute(actor: Character): Option[String] =
@@ -172,7 +174,7 @@ class Game:
 
 
   // for testing the logic of my program before committing it to the main functionality:
-
+/**
   def testingInfo(): String =
     Characters.map(x => x.currentStats()).mkString("") + "\n" +
     Monsters.map(x => x.currentStats()).mkString("") + "\n" +
@@ -246,5 +248,4 @@ class Game:
           println("Something went wrong. Make sure your inputting is correct.")
         println(testingInfo())
       waveCount += 1
-    println(this.goodbyeMessage)
-
+    println(this.goodbyeMessage) */

@@ -11,7 +11,7 @@ object UserInterface extends App:
     game.playGame()
  
   //for testing purposes
-  private def testRun() =
-    game.testPlayGame()
+  /*private def testRun() =
+    game.testPlayGame()*/
     
 end UserInterface

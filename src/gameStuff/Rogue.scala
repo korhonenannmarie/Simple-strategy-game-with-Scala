@@ -16,4 +16,3 @@ class Rogue(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack:
       s"${target.characterName} takes $damagePerAttack damage.\n"
     else
       "The crossbow attack does not hit.\n"
-      

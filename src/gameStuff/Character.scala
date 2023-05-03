@@ -23,7 +23,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   protected val damageMod: Int              // ...damage, health and armour go up when a new wave starts
   protected val toHitMod: Int
 
-  def isDead: Boolean = currentHealth <= 0         // character is dead if its health goes to zero or below
+  def isDead: Boolean = currentHealth <= 0  // character is dead if its health goes to zero or below
   def damageDoneInTotal: Int = damageDone   // a function the game can call without being able to modify it
   def isInMelee: Boolean = false
 
@@ -88,8 +88,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     damagePerAttack += damageMod
     damageDone = 0
     toHit += (damageDone/2) * toHitMod
-    
-    
+
   // mainly for testing
   def rest(): String = "You rest for a while.\n"
 
