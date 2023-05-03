@@ -51,8 +51,9 @@ class Game:
   def monstersTurn() =
     val monster = chooseMonster(Monsters)
     monster.move(Characters)
-    monster.attack(chooseTarget(Characters))
+    val outcome = monster.attack(monster.chooseTarget(Characters))
     roundCount += 1
+    println(outcome)
 
 // make this more generic
   def setMonsters(): String =
