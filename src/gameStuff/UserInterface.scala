@@ -9,7 +9,7 @@ object UserInterface extends App:
 
   private def run() =
     game.playGame()
-
+ 
   //for testing purposes
   private def testRun() =
     game.testPlayGame()

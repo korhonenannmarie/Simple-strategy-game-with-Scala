@@ -21,5 +21,3 @@ class Fighter(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
     this.defend()
 
 
-  
-  

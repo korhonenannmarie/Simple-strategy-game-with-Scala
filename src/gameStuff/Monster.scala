@@ -34,11 +34,3 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
 
   def chooseTarget(characters: Buffer[Character]): Character =
     characters.filter(!_.isDead).maxBy(_.healthToAttacker)
-
-
-
-
-
-  //todo: attacking logic
-  //todo: override almost all the functions lol
-  //todo: distance stuff

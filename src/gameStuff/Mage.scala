@@ -16,4 +16,9 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
     val a = target.beHealed(healingDone)
     s"${target.characterName} is healed $a health points."
     
-  
+  def fireBall(target: Character): String =
+    if !target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit) then
+      damageDone += damagePerAttack
+      s"${target.characterName} takes $damagePerAttack damage.\n"
+    else
+      "The fireball attack does not hit. You drop the bottle.\n"
