@@ -97,7 +97,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def currentStats(): String =
     s"$name has a health of $currentHealth/$startingHealth. Their current armour is $armour. \n"
     
-
+  def healthToMonster: Int = currentHealth
 
 end Character
 

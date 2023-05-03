@@ -49,6 +49,9 @@ class Game:
 
 
   def monstersTurn() =
+    val monster = chooseMonster(Monsters)
+    monster.move(Characters)
+    monster.attack(chooseTarget(Characters))
     roundCount += 1
 
 // make this more generic
@@ -58,6 +61,9 @@ class Game:
       val m = Monster(s"monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield, Random.between(0,2)) // todo: make extendable
       Monsters += m
     s"There are $monsterAmount monsters here."
+
+  def chooseMonster(monsters: Buffer[Monster]): Monster = ???
+  
 
 
   def playTurn(command: String): Option[String] =
@@ -78,12 +84,16 @@ class Game:
         str2character(strActor)
       else
         None
+
     //todo: make a list of possible command words and insert that in these instead
     //todo: commands such as help, end game, etc.
     def execute(actor: Character): Option[String] =
       verb match
         case "attack" if !target.get.isDead => Some(actor.attack(target.get))
-        case "heal"   => Some(mage.heal(target.get))
+        case "heal" if actor.isInstanceOf[Mage]  => Some(actor.asInstanceOf[Mage].heal(target.get))
+        case "crossbow" if actor.isInstanceOf[Rogue] => Some(actor.asInstanceOf[Rogue].crossbow(target.get))
+        case "protect" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
+        case "longbow" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
         case other => None
 
     def noTargetExecute(actor: Character): Option[String] =
@@ -92,12 +102,18 @@ class Game:
         case "defend" => Some(actor.defend())
         case other => None
 
-    val doingStuff =
+    def simpleExecute(actor: String): Option[String] =
+      actor match
+        case "help" => Some(this.help)
+
+    val doingStuff = //todo: figure this shit out
       if actor.nonEmpty && !(actor.get.isDead) then
         if target.nonEmpty then
           execute(actor.get)
-        else
+        else if verb.nonEmpty then
           noTargetExecute(actor.get)
+        else
+          simpleExecute(commandText)
       else
         None
 
@@ -111,6 +127,7 @@ class Game:
       
   end playTurn
 
+  def help: String = "yeet"
 
   def welcomeMessage: String = welcome //todo: add high scores here
   

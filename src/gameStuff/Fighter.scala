@@ -9,10 +9,10 @@ class Fighter(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   val toHitMod = mageToHitMod
 
 
-  def longBow(monster: Monster) =
-    if !monster.isInMelee && monster.takeDamage(this.damagePerAttack, this.toHit) then
+  def longBow(target: Character) =
+    if !target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit) then
       damageDone += damagePerAttack
-      s"${monster.characterName} takes $damagePerAttack damage.\n"
+      s"${target.characterName} takes $damagePerAttack damage.\n"
     else
       "The longbow attack does not hit.\n"
 

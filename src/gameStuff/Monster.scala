@@ -1,9 +1,12 @@
 package gameStuff
 
 import gameStuff.Character
-import scala.util.Random
 
-class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: Int, shield: Int, distance: Int)
+import java.security.KeyStore.TrustedCertificateEntry
+import scala.util.Random
+import scala.collection.mutable.Buffer
+
+class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: Int, shield: Int, var distance: Int)
   extends Character(name, health, armour, toHit, damagePerAttack, shield):
   
   val armourMod = monsterArmourMod
@@ -17,6 +20,16 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   override def isInMelee: Boolean = currentDis == 0
 
   override def attack(target: Character) = ???
+
+  def move(characters: Buffer[Character]): Unit =
+    val mostDangerous = characters.filter(!_.isDead).maxBy(_.healthToMonster)
+    mostDangerous match
+      case _: Rogue => distance = 0
+      case _: Fighter => distance = 1
+      case _: Mage => distance = 1
+      
+  def chooseTarget(characters: Buffer[Character]): Character =
+    characters.filter(!_.isDead). ????
 
 
 

@@ -5,7 +5,7 @@ import scala.io.StdIn.readLine
 
 object UserInterface extends App:
   private val game = Game()
-    this.testRun()
+    this.run()
 
   private def run() =
     game.playGame()
