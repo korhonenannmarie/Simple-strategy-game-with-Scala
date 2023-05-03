@@ -26,14 +26,14 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
       "the attack does not hit."
 
   def move(characters: Buffer[Character]): Unit =
-    val mostDangerous = characters.filter(!_.isDead).maxBy(_.healthToMonster)
+    val mostDangerous = characters.filter(!_.isDead).maxBy(_.healthToAttacker)
     mostDangerous match
       case _: Rogue => distance = 0
       case _: Fighter => distance = 1
       case _: Mage => distance = 1
 
   def chooseTarget(characters: Buffer[Character]): Character =
-    characters.filter(!_.isDead).maxBy(_.healthToMonster)
+    characters.filter(!_.isDead).maxBy(_.healthToAttacker)
 
 
 

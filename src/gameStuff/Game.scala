@@ -63,8 +63,8 @@ class Game:
       Monsters += m
     s"There are $monsterAmount monsters here."
 
-  def chooseMonster(monsters: Buffer[Monster]): Monster = ???
-  
+  def chooseMonster(monsters: Buffer[Monster]): Monster =
+    monsters.filter(!_.isDead).maxBy(_.healthToAttacker)
 
 
   def playTurn(command: String): Option[String] =
