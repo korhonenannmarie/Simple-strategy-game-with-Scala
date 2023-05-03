@@ -25,12 +25,12 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
   def isDead: Boolean = currentHealth <= 0  // character is dead if its health goes to zero or below
   def damageDoneInTotal: Int = damageDone   // a function the game can call without being able to modify it
-  def isInMelee: Boolean = false
+  def isInMelee: Boolean = true
 
 
   // attack: calls another character's takeDamage method, then adds the damage done to this character's damageDone counter.
   def attack(target: Character): String =
-    if target.takeDamage(this.damagePerAttack, this.toHit) && target.isInMelee then // should these texts maybe come from a collection of constants?
+    if target.takeDamage(this.damagePerAttack, this.toHit, target.isInMelee) && target.isInMelee then // should these texts maybe come from a collection of constants?
       damageDone += damagePerAttack
       s"${target.characterName} takes $damagePerAttack damage.\n"
     else
@@ -56,8 +56,8 @@ abstract class Character(protected val name: String, protected val health: Int, 
       defending = false
 
   // method called by another class in different types of attacks
-  def takeDamage(damage: Int, toHit: Int): Boolean =
-    if armour <= toHit then
+  def takeDamage(damage: Int, toHit: Int, isInMelee: Boolean): Boolean =
+    if armour <= toHit && isInMelee then
       if currentHealth > 0 then
         currentHealth += -damage
         true

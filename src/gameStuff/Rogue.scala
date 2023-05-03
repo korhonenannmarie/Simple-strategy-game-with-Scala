@@ -11,7 +11,7 @@ class Rogue(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack:
   val toHitMod = mageToHitMod
 
   def crossbow(target: Character) =
-    if !target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit) then
+    if !target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, target.isInMelee) then
       damageDone += damagePerAttack
       s"${target.characterName} takes $damagePerAttack damage.\n"
     else
