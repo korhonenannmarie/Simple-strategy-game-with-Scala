@@ -12,7 +12,7 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   val armourMod = monsterArmourMod
   val healthMod = monsterHealthMod
   val damageMod = monsterDamageMod
-  val toHitMod  = mageToHitMod
+  val toHitMod  = monsterToHitMod
 
 
   def currentDis: Int = distance

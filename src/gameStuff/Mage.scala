@@ -19,6 +19,6 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
   def fireBall(target: Character): String =
     if !target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, target.isInMelee) then
       damageDone += damagePerAttack
-      s"${target.characterName} takes $damagePerAttack damage.\n"
+      s"${target.characterName} takes $damagePerAttack damage from the fireball attack.\n"
     else
       "The fireball attack does not hit. You drop the bottle.\n"

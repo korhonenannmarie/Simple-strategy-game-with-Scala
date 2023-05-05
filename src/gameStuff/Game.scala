@@ -62,8 +62,14 @@ class Game:
     for i <- 1 to monsterAmount do
       val m = Monster(s"monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield, Random.between(0,2)) // todo: make extendable
       Monsters += m
-    val monsterLocations = Monsters.map(_.distance)
-    s"There are $monsterAmount monsters here. $monsterLocations"
+    val monsterLocations = Monsters.map(monster => (monster.characterName,
+      monster.currentDis match
+        case 0 => "melee"
+        case 1 => "far away"))
+    val monsterInfo =
+      for (a,b) <- monsterLocations yield
+        s" $a is at $b distance"
+    s"There are $monsterAmount monsters here." + monsterInfo.mkString(",")
 
   def chooseMonster(monsters: Buffer[Monster]): Monster =
     monsters.filter(!_.isDead).maxBy(_.healthToAttacker)
@@ -97,7 +103,7 @@ class Game:
         case "heal" if actor.isInstanceOf[Mage]  => Some(actor.asInstanceOf[Mage].heal(target.get))
         case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(actor.asInstanceOf[Rogue].crossbow(target.get))
         case "protect" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
-        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].protect(target.get))
+        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].longBow(target.get))
         case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].fireBall(target.get))
         case other => None
 
