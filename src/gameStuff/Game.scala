@@ -73,7 +73,12 @@ class Game:
     s"There are $monsterAmount monsters here." + monsterInfo.mkString(",")
 
   def chooseMonster(monsters: Buffer[Monster]): Monster =
-    monsters.filter(!_.isDead).maxBy(_.healthToAttacker)
+    val alives = monsters.filter(!_.isDead)
+    val ableToHit = alives.filter(monster => Characters.filter(!_.isDead).exists(character => monster.currentToHit >= character.healthToAttacker))
+    if !ableToHit.isEmpty then
+      ableToHit.maxBy(_.healthToAttacker)
+    else
+      alives.maxBy(_.healthToAttacker)
 
 
 
@@ -85,13 +90,13 @@ class Game:
     val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
 
     val target: Option[Character] =
-      if Characters.map(_.characterName).contains(strTarget) || Monsters.map(_.characterName).contains(strTarget) then
+      if Characters.map(_.characterName.toLowerCase).contains(strTarget) || Monsters.map(_.characterName.toLowerCase).contains(strTarget) then
         str2character(strTarget)
       else
         None
 
     val actor: Option[Character] =
-      if Characters.map(_.characterName).contains(strActor) then
+      if Characters.map(_.characterName.toLowerCase).contains(strActor) then
         str2character(strActor)
       else
         None
@@ -102,10 +107,10 @@ class Game:
       verb match
         case "attack" if !target.get.isDead => Some(actor.attack(target.get))
         case "heal" if actor.isInstanceOf[Mage]  => Some(actor.asInstanceOf[Mage].heal(target.get))
-        case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(actor.asInstanceOf[Rogue].crossbow(target.get))
+        case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(actor.asInstanceOf[Rogue].rangedAttack(target.get))
         case "protect" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
-        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].longBow(target.get))
-        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].fireball(target.get))
+        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].rangedAttack(target.get))
+        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].rangedAttack(target.get))
         case other => None
 
     def noTargetExecute(actor: Character): Option[String] =

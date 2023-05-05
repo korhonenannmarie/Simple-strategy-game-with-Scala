@@ -8,13 +8,8 @@ class Fighter(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   val damageMod = fighterDamageMod
   val toHitMod = mageToHitMod
 
+  val rangedAttackName = "longbow"
 
-  def longBow(target: Character) =
-    if !target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, target.isInMelee) then
-      damageDone += damagePerAttack
-      s"${target.characterName} takes $damagePerAttack damage.\n"
-    else
-      "The longbow attack does not hit.\n"
 
   def protect(target: Character) =
     target.defend()

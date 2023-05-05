@@ -1,0 +1,6 @@
+[debug] > Exec(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % Test, None, None)
+[error] Expected whitespace character
+[error] Expected '/'
+[error] libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % Test
+[error]                     ^
+[debug] > Exec(idea-shell, None, None)

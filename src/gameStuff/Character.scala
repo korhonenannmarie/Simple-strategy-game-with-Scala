@@ -23,21 +23,38 @@ abstract class Character(protected val name: String, protected val health: Int, 
   protected val damageMod: Int              // ...damage, health and armour go up when a new wave starts
   protected val toHitMod: Int
 
+  protected val rangedAttackName: String
+
   def isDead: Boolean = currentHealth <= 0  // character is dead if its health goes to zero or below
   def damageDoneInTotal: Int = damageDone   // a function the game can call without being able to modify it
   def isInMelee: Boolean = true
+  def currentArmour = armour
 
 
   // attack: calls another character's takeDamage method, then adds the damage done to this character's damageDone counter.
   def attack(target: Character): String =
-    if target.takeDamage(this.damagePerAttack, this.toHit, target.isInMelee) && target.isInMelee then // should these texts maybe come from a collection of constants?
+    if target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, this) then // should these texts maybe come from a collection of constants?
       damageDone += damagePerAttack
       s"${target.characterName} takes $damagePerAttack damage.\n"
     else
       "The attack does not hit.\n"
+
+  def rangedAttack(target: Character) =
+    if (!target.isInMelee && this.toHit >= target.currentToHit) then
+      val damage = target.takeDamage(this.damagePerAttack, this.toHit, this)
+      if damage then
+        damageDone += damagePerAttack
+        s"${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
+      else
+        s"${target.characterName} has armour that was too high. The $rangedAttackName attack does not hit. \n"
+      else if (target.isInMelee)
+      s"${target.characterName} is in melee. The $rangedAttackName attack does not hit."
+      else
+      s"${target.characterName} evades the $rangedAttackName attack."
       
   def characterName: String = this.name
 
+  def currentToHit = toHit
 
   protected var defending: Boolean = false
   
@@ -56,8 +73,8 @@ abstract class Character(protected val name: String, protected val health: Int, 
       defending = false
 
   // method called by another class in different types of attacks
-  def takeDamage(damage: Int, toHit: Int, isInMelee: Boolean): Boolean =
-    if armour <= toHit && isInMelee then
+  def takeDamage(damage: Int, toHit: Int, attacker: Character): Boolean =
+    if armour <= toHit then
       if currentHealth > 0 then
         currentHealth += -damage
         true
