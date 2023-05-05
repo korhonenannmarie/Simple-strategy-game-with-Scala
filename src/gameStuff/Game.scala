@@ -29,6 +29,7 @@ class Game:
   val Monsters: Buffer[Monster] = Buffer()
 
 
+
 // todo: add high score stuff
   def playGame() =
     println(this.welcomeMessage)
@@ -162,7 +163,17 @@ class Game:
 
 
 
-  def help(): Unit = println("yeet")
+  def help(): Unit =
+    println("Available commands:")
+    println("- <character> attack <target>")
+    println("- mage heal <target>")
+    println("- rogue crossbow <target>")
+    println("- fighter protect <target>")
+    println("- fighter longbow <target>")
+    println("- mage fireball <target>")
+    println("- <character> rest")
+    println("- <character> defend")
+    println("- help")
 
   def welcomeMessage: String = welcome //todo: add high scores here
   
@@ -190,6 +201,7 @@ class Game:
       case "monster2" => Some(Monsters(1))
       case "monster3" => Some(Monsters(2))
       case other => None
+
 
 
 
