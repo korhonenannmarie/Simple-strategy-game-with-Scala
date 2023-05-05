@@ -49,10 +49,15 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
 
   def chooseTarget(characters: Buffer[Character]): Character =
     val alives = characters.filter(!_.isDead)
-    val ableToHit = alives.filter(_.currentArmour <= toHit)
-    if !ableToHit.isEmpty then
-      ableToHit.maxBy(_.healthToAttacker)
+
+    if alives.contains(
+      whoAttackedLast match
+        case Some(character) => character
+        case None => false) then
+      whoAttackedLast.get
     else
-      alives.maxBy(_.healthToAttacker)
-
-
+      val ableToHit = alives.filter(_.currentArmour <= toHit)
+      if !ableToHit.isEmpty then
+        ableToHit.maxBy(_.healthToAttacker)
+      else
+        alives.maxBy(_.healthToAttacker)

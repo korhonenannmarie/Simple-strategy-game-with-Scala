@@ -130,7 +130,7 @@ class Game:
         else if verb.nonEmpty then
           noTargetExecute(actor.get)
         else
-          simpleExecute(commandText)
+          simpleExecute(strActor)
       else
         None
 
