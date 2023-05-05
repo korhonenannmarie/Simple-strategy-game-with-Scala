@@ -18,7 +18,7 @@ class Game:
   def currentWave: Int  = waveCount
 
   def waveIsOver: Boolean = Monsters.forall(_.isDead)
-  def isOver: Boolean = Characters.count(_.isDead) == 3 || waveCount == maxWave // more generalised!
+  def isOver: Boolean = Characters.forall(_.isDead) || waveCount == maxWave
 
   val mage: Mage = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
   val fighter: Fighter = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
@@ -44,6 +44,7 @@ class Game:
           Characters.foreach(_.resetForNewTurn())
         else
           println("Something went wrong. Make sure your inputting is correct.")
+        println(testingInfo())
       waveCount += 1
     println(this.goodbyeMessage)
   end playGame
@@ -60,7 +61,7 @@ class Game:
   def setMonsters(): String =
     val monsterAmount: Int = Random.between(1,4)
     for i <- 1 to monsterAmount do
-      val m = Monster(s"monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield, Random.between(0,2)) // todo: make extendable
+      val m = Monster(s"Monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield, Random.between(0,2)) // todo: make extendable
       Monsters += m
     val monsterLocations = Monsters.map(monster => (monster.characterName,
       monster.currentDis match
@@ -104,7 +105,7 @@ class Game:
         case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(actor.asInstanceOf[Rogue].crossbow(target.get))
         case "protect" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
         case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].longBow(target.get))
-        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].fireBall(target.get))
+        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].fireball(target.get))
         case other => None
 
     def noTargetExecute(actor: Character): Option[String] =
@@ -169,17 +170,6 @@ class Game:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
   // for testing the logic of my program before committing it to the main functionality:
   def testingInfo(): String =
     Characters.map(x => x.currentStats()).mkString("") + "\n" +
@@ -187,84 +177,3 @@ class Game:
     Monsters.map(x => x.currentDis).mkString("") + "\n" +
     s"$currentRound \n" +
     s"$currentWave \n"
-
-  def testTurn(command: String): Option[String] =
-    
-    val commandText               = command.trim.toLowerCase
-    val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
-    val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
-    val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
-
-    val target: Option[Character] =
-      if Characters.map(_.characterName).contains(strTarget) || Monsters.map(_.characterName).contains(strTarget) then
-        str2character(strTarget)
-      else
-        None
-
-    val actor: Option[Character] =
-      if Characters.map(_.characterName).contains(strActor) then
-        str2character(strActor)
-      else
-        None
-
-    //todo: make a list of possible command words and insert that in these instead
-    //todo: commands such as help, end game, etc.
-    def execute(actor: Character): Option[String] =
-      verb match
-        case "attack" if !target.get.isDead => Some(actor.attack(target.get))
-        case "heal" if actor.isInstanceOf[Mage]  => Some(actor.asInstanceOf[Mage].heal(target.get))
-        case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(actor.asInstanceOf[Rogue].crossbow(target.get))
-        case "protect" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
-        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].protect(target.get))
-        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].fireBall(target.get))
-        case other => None
-
-    def noTargetExecute(actor: Character): Option[String] =
-      verb match
-        case "rest" => Some(actor.rest())
-        case "defend" => Some(actor.defend())
-        case other => None
-
-    def simpleExecute(actor: String): Option[String] =
-      actor match
-        case "help" => Some(this.help)
-
-    val doingStuff = //todo: figure this shit out
-      if actor.nonEmpty && !(actor.get.isDead) then
-        if target.nonEmpty then
-          execute(actor.get)
-        else if verb.nonEmpty then
-          noTargetExecute(actor.get)
-        else
-          simpleExecute(commandText)
-      else
-        None
-
-    val outcomeReport: Option[String] =
-      if doingStuff.isDefined then
-        Some(s"${doingStuff.get}\n" + s"${mage.currentStats()} ${fighter.currentStats()} ${rogue.currentStats()}" + Monsters.map(x => x.currentStats()).mkString("") + "\n")
-      else
-        None
-
-    outcomeReport
-
-  end testTurn
-
-
-  def testPlayGame() =
-    println(this.welcomeMessage)
-    while !this.isOver do
-      this.newWave()
-      while !this.isOver && !this.waveIsOver do
-        val command = readLine("\nCommand:")
-        val turnReport = this.testTurn(command)
-        if turnReport.nonEmpty then
-          println(turnReport.get)
-          if Monsters.exists(!_.isDead) then
-            this.monstersTurn()
-          Characters.foreach(_.resetForNewTurn())
-        else
-          println("Something went wrong. Make sure your inputting is correct.")
-        println(testingInfo())
-      waveCount += 1
-    println(this.goodbyeMessage)

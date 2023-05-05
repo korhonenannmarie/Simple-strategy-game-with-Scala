@@ -16,7 +16,7 @@ val mageHealthMod = 2
 val mageDamageMod = 2
 val mageToHitMod  = 2
 
-val fighterName = "fighter"
+val fighterName = "Fighter"
 val fighterHealth = 15
 val fighterArmour = 10
 val fighterToHit = 10
@@ -27,7 +27,7 @@ val fighterArmourMod = 2
 val fighterHealthMod = 2
 val fighterDamageMod = 2
 
-val rogueName = "rogue"
+val rogueName = "Rogue"
 val rogueHealth = 10
 val rogueArmour = 10
 val rogueToHit = 10

@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/StrategyGame.iml" filepath="$PROJECT_DIR$/StrategyGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/strategygame.iml" filepath="$PROJECT_DIR$/.idea/modules/strategygame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/strategygame-build.iml" filepath="$PROJECT_DIR$/.idea/modules/strategygame-build.iml" />
     </modules>
   </component>
 </project>
