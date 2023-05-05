@@ -103,25 +103,26 @@ class Game:
 
     //todo: make a list of possible command words and insert that in these instead
     //todo: commands such as help, end game, etc.
-    def execute(actor: Character): Option[String] =
+    def execute(character: Character): Option[String] =
       verb match
-        case "attack" if !target.get.isDead => Some(actor.attack(target.get))
-        case "heal" if actor.isInstanceOf[Mage]  => Some(actor.asInstanceOf[Mage].heal(target.get))
-        case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(actor.asInstanceOf[Rogue].rangedAttack(target.get))
-        case "protect" if actor.isInstanceOf[Fighter] => Some(actor.asInstanceOf[Fighter].protect(target.get))
-        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(actor.asInstanceOf[Fighter].rangedAttack(target.get))
-        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(actor.asInstanceOf[Mage].rangedAttack(target.get))
+        case "attack" if !target.get.isDead => Some(character.attack(target.get))
+        case "heal" if actor.isInstanceOf[Mage]  => Some(character.asInstanceOf[Mage].heal(target.get))
+        case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(character.asInstanceOf[Rogue].rangedAttack(target.get))
+        case "protect" if actor.isInstanceOf[Fighter] => Some(character.asInstanceOf[Fighter].protect(target.get))
+        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(character.asInstanceOf[Fighter].rangedAttack(target.get))
+        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(character.asInstanceOf[Mage].rangedAttack(target.get))
         case other => None
 
-    def noTargetExecute(actor: Character): Option[String] =
+    def noTargetExecute(character: Character): Option[String] =
       verb match
-        case "rest" => Some(actor.rest())
-        case "defend" => Some(actor.defend())
+        case "rest" => Some(character.rest())
+        case "defend" => Some(character.defend())
         case other => None
 
-    def simpleExecute(actor: String): Option[String] =
-      actor match
-        case "help" => Some(this.help)
+    def simpleExecute(command: String): Option[String] =
+      command match
+        case "help" => Some(this.help())
+        case other => None
 
     val doingStuff = //todo: figure this shit out
       if actor.nonEmpty && !(actor.get.isDead) then
@@ -144,7 +145,7 @@ class Game:
       
   end playTurn
 
-  def help: String = "yeet"
+  def help(): String = "yeet"
 
   def welcomeMessage: String = welcome //todo: add high scores here
   
@@ -162,7 +163,7 @@ class Game:
 
 
 
-  // this isn't super extendable... //todo: think of a more general option
+  // this isn't super extendable... // todo: think of a more general option
   def str2character(str: String): Option[Character] =
     str match
       case "mage" => Some(mage)

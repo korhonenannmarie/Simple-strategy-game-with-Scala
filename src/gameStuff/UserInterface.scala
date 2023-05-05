@@ -9,6 +9,5 @@ object UserInterface extends App:
 
   private def run() =
     game.playGame()
-
     
 end UserInterface
