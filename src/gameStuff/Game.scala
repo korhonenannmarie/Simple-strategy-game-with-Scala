@@ -112,6 +112,7 @@ class Game:
     val outcomeReport: Option[String] =
       if doingStuff.isDefined then
         Some(s"${doingStuff.get}\n" + s"${mage.currentStats()} ${fighter.currentStats()} ${rogue.currentStats()}")
+
       else
         doingStuff match
           case None if actor.isEmpty =>
@@ -201,8 +202,6 @@ class Game:
       case "monster2" => Some(Monsters(1))
       case "monster3" => Some(Monsters(2))
       case other => None
-
-
 
 
   // for testing the logic of my program before committing it to the main functionality:
