@@ -42,11 +42,10 @@ class Game:
           if Monsters.exists(!_.isDead) then
             this.monstersTurn()
           Characters.foreach(_.resetForNewTurn())
-        else
-          println("Something went wrong. Make sure your inputting is correct.")
         println(testingInfo())
       waveCount += 1
     println(this.goodbyeMessage)
+
   end playGame
 
 
@@ -115,13 +114,17 @@ class Game:
       else
         doingStuff match
           case None if actor.isEmpty =>
-            Some("You must specify a valid character name.")
+            println("You must specify a valid character name.")
+            None
           case None if actor.get.isDead =>
-            Some("You can't do anything because this character is dead.")
+            println("You can't do anything because this character is dead.")
+            None
           case None if target.nonEmpty && target.get.isDead =>
-            Some("You can't target a dead character.")
+            println("You can't target a dead character.")
+            None
           case None =>
-            Some("Unknown command. Type 'help' for a list of available commands.")
+            println("Unknown command. Type 'help' for a list of available commands.")
+            None
 
     outcomeReport
 
