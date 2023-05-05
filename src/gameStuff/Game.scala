@@ -20,9 +20,9 @@ class Game:
   def waveIsOver: Boolean = Monsters.forall(_.isDead)
   def isOver: Boolean = Characters.forall(_.isDead) || waveCount == maxWave
 
-  val mage: Mage = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
-  val fighter: Fighter = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
-  val rogue: Rogue = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
+  private val mage: Mage = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
+  private val fighter: Fighter = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
+  private val rogue: Rogue = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
 
   // buffers containing all characters and all the monsters for that wave
   val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
@@ -50,40 +50,9 @@ class Game:
   end playGame
 
 
-  def monstersTurn() =
-    val monster = chooseMonster(Monsters)
-    monster.move(Characters)
-    val outcome = monster.attack(monster.chooseTarget(Characters))
-    roundCount += 1
-    println(outcome)
-
-// make this more generic
-  def setMonsters(): String =
-    val monsterAmount: Int = Random.between(1,4)
-    for i <- 1 to monsterAmount do
-      val m = Monster(s"Monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield, Random.between(0,2)) // todo: make extendable
-      Monsters += m
-    val monsterLocations = Monsters.map(monster => (monster.characterName,
-      monster.currentDis match
-        case 0 => "melee"
-        case 1 => "far away"))
-    val monsterInfo =
-      for (a,b) <- monsterLocations yield
-        s" $a is at $b distance"
-    s"There are $monsterAmount monsters here." + monsterInfo.mkString(",")
-
-  def chooseMonster(monsters: Buffer[Monster]): Monster =
-    val alives = monsters.filter(!_.isDead)
-    val ableToHit = alives.filter(monster => Characters.filter(!_.isDead).exists(character => monster.currentToHit >= character.healthToAttacker))
-    if !ableToHit.isEmpty then
-      ableToHit.maxBy(_.healthToAttacker)
-    else
-      alives.maxBy(_.healthToAttacker)
-
-
 
   def playTurn(command: String): Option[String] =
-    
+
     val commandText               = command.trim.toLowerCase
     val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
     val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
@@ -121,17 +90,22 @@ class Game:
 
     def simpleExecute(command: String): Option[String] =
       command match
-        case "help" => Some(this.help())
-        case other => None
+        case "help"=>
+          this.help()
+          None
+        case other =>
+          None
 
-    val doingStuff = //todo: figure this shit out
+    val doingStuff: Option[String] =
       if actor.nonEmpty && !(actor.get.isDead) then
         if target.nonEmpty then
           execute(actor.get)
         else if verb.nonEmpty then
           noTargetExecute(actor.get)
         else
-          simpleExecute(strActor)
+          None
+      else if commandText.nonEmpty then
+        simpleExecute(strActor)
       else
         None
 
@@ -139,13 +113,53 @@ class Game:
       if doingStuff.isDefined then
         Some(s"${doingStuff.get}\n" + s"${mage.currentStats()} ${fighter.currentStats()} ${rogue.currentStats()}")
       else
-        None
+        doingStuff match
+          case None if actor.isEmpty =>
+            Some("You must specify a valid character name.")
+          case None if actor.get.isDead =>
+            Some("You can't do anything because this character is dead.")
+          case None if target.nonEmpty && target.get.isDead =>
+            Some("You can't target a dead character.")
+          case None =>
+            Some("Unknown command. Type 'help' for a list of available commands.")
 
     outcomeReport
-      
+
   end playTurn
 
-  def help(): String = "yeet"
+  def monstersTurn() =
+    val monster = chooseMonster(Monsters)
+    monster.move(Characters)
+    val outcome = monster.attack(monster.chooseTarget(Characters))
+    roundCount += 1
+    println(outcome)
+
+// make this more generic
+  def setMonsters(): String =
+    val monsterAmount: Int = Random.between(1,4)
+    for i <- 1 to monsterAmount do
+      val m = Monster(s"Monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield, Random.between(0,2)) // todo: make extendable
+      Monsters += m
+    val monsterLocations = Monsters.map(monster => (monster.characterName,
+      monster.currentDis match
+        case 0 => "melee"
+        case 1 => "far away"))
+    val monsterInfo =
+      for (a,b) <- monsterLocations yield
+        s" $a is at $b distance"
+    s"There are $monsterAmount monsters here." + monsterInfo.mkString(",")
+
+  def chooseMonster(monsters: Buffer[Monster]): Monster =
+    val alives = monsters.filter(!_.isDead)
+    val ableToHit = alives.filter(monster => Characters.filter(!_.isDead).exists(character => monster.currentToHit >= character.healthToAttacker))
+    if !ableToHit.isEmpty then
+      ableToHit.maxBy(_.healthToAttacker)
+    else
+      alives.maxBy(_.healthToAttacker)
+
+
+
+  def help(): Unit = println("yeet")
 
   def welcomeMessage: String = welcome //todo: add high scores here
   
