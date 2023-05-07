@@ -96,6 +96,9 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
   def currentStats(): String =
     s"$name has a health of $currentHealth/$startingHealth. Their current armour is $armour. \n"
+
+  def gridStats(): String =
+    s"$name HP:$currentHealth/$startingHealth AC:$currentArmour/$armour"
     
   def healthToAttacker: Int = currentHealth
 

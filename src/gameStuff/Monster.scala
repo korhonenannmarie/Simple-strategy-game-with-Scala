@@ -21,7 +21,7 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
 
   def currentDis: Int = distance
 
-  override def isInMelee: Boolean = currentDis == 0
+  override def isInMelee: Boolean = currentDis == 1
 
   override def attack(target: Character) = 
     if target.takeDamage(this.damagePerAttack, this.toHit, this) then
@@ -43,9 +43,9 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   def move(characters: Buffer[Character]): Unit =
     val mostDangerous = characters.filter(!_.isDead).maxBy(_.healthToAttacker)
     mostDangerous match
-      case _: Rogue => distance = 0
-      case _: Fighter => distance = 1
-      case _: Mage => distance = 1
+      case r: Rogue => r.isInMelee
+      case f: Fighter => !f.isInMelee
+      case m: Mage => !m.isInMelee
 
   def chooseTarget(characters: Buffer[Character]): Character =
     val alives = characters.filter(!_.isDead)

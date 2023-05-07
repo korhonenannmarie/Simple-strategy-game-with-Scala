@@ -28,10 +28,13 @@ class Game:
   val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
   val Monsters: Buffer[Monster] = Buffer()
 
-  val monsterPositions =
+  def monsterPositions =
     Monsters.map(m =>
       ((m.distance), Monsters.indexOf(m)))
 
+  def characterPositions =
+    Characters.map(c =>
+      ((2), Characters.indexOf(c)))
 
 // todo: add high score stuff
   def playGame() =
@@ -39,7 +42,7 @@ class Game:
     while !this.isOver do
       this.newWave()
       while !this.isOver && !this.waveIsOver do
-        printMonsters(Monsters, monsterPositions)
+        printMonsters(Monsters, Characters, monsterPositions, characterPositions)
         val command = readLine("\nCommand:")
         val turnReport = this.playTurn(command)
         if turnReport.nonEmpty then
@@ -149,8 +152,8 @@ class Game:
       Monsters += m
     val monsterLocations = Monsters.map(monster => (monster.characterName,
       monster.currentDis match
-        case 0 => "melee"
-        case 1 => "far away"))
+        case 1 => "melee"
+        case 0 => "far away"))
     val monsterInfo =
       for (a,b) <- monsterLocations yield
         s" $a is at $b distance"
@@ -206,25 +209,22 @@ class Game:
       case other => None
 
 
-def printMonsters(monsters: Buffer[Monster], monsterPositions: Buffer[(Int, Int)]): Unit =
+def printMonsters(monsters: Buffer[Monster], characters: Buffer[Character], monsterPositions: Buffer[(Int, Int)], characterPositions: Buffer[(Int, Int)]): Unit =
   val gridSize = 3
-  val positions = Array((gridSize / 2, gridSize / 3), (gridSize / 2, gridSize / 2), (gridSize / 2, 2 * gridSize / 3))
+  val cellWidth = (monsters.map(_.gridStats().length) ++ characters.map(_.gridStats().length)).max
+  val cellString = s"|${" " * (cellWidth)}|"
+  val grid = Array.fill(gridSize, gridSize)(cellString)
 
-  val grid = Array.fill(gridSize, gridSize)(" ")
-
-  for (m <- monsters) do
-    val (position, monsterIndex) = monsterPositions(monsters.indexOf(m))
-    val (row, col) = positions(monsters.indexOf(m))
-    if (position == 0) then
-      grid(row)(col) = "X"
-    else
-      grid(row-1)(col) = "X"
-
+  if monsters.nonEmpty then
+    for (m <- monsters.indices) do
+      val (row, col) = monsterPositions(m)
+      grid(row)(col) = s"|${monsters(m).gridStats().padTo(cellWidth, ' ')}|"
+    for (x <- characters.indices) do
+      val (row, col) = characterPositions(x)
+      grid(row)(col) = s"|${characters(x).gridStats().padTo(cellWidth, ' ')}|"
 
   for (row <- grid) do
-    println(row.mkString(" "))
-
-
+    println(row.mkString(""))
 
 
   // for testing the logic of my program before committing it to the main functionality:
