@@ -186,7 +186,7 @@ class Game:
   
   def goodbyeMessage: String =
     val extraScore = score(Characters)
-    goodbye + s"Your score was: ${this.extraScore}."
+    goodbye + s"Your score was: ${extraScore}."
   
   def newWave(): Unit =
     if waveCount != 0 then
@@ -212,22 +212,24 @@ class Game:
       case other => None
 
 
-def printMonsters(monsters: Buffer[Monster], characters: Buffer[Character], monsterPositions: Buffer[(Int, Int)], characterPositions: Buffer[(Int, Int)]): Unit =
-  val gridSize = 3
-  val cellWidth = (monsters.map(_.gridStats().length) ++ characters.map(_.gridStats().length)).max
-  val cellString = s"|${" " * (cellWidth)}|"
-  val grid = Array.fill(gridSize, gridSize)(cellString)
+  def printMonsters(monsters: Buffer[Monster], characters: Buffer[Character], monsterPositions: Buffer[(Int, Int)], characterPositions: Buffer[(Int, Int)]): Unit =
+    val gridSize = 3
+    val cellWidth = (monsters.map(_.gridStats().length) ++ characters.map(_.gridStats().length)).max
+    val cellString = s"|${" " * (cellWidth)}|"
+    val grid = Array.fill(gridSize, gridSize)(cellString)
 
-  if monsters.nonEmpty then
-    for (m <- monsters.indices) do
-      val (row, col) = monsterPositions(m)
-      grid(row)(col) = s"|${monsters(m).gridStats().padTo(cellWidth, ' ')}|"
-    for (x <- characters.indices) do
-      val (row, col) = characterPositions(x)
-      grid(row)(col) = s"|${characters(x).gridStats().padTo(cellWidth, ' ')}|"
+    if monsters.nonEmpty then
+      for (m <- monsters.indices) do
+        val (row, col) = monsterPositions(m)
+        grid(row)(col) = s"|${monsters(m).gridStats().padTo(cellWidth, ' ')}|"
+      for (x <- characters.indices) do
+        val (row, col) = characterPositions(x)
+        grid(row)(col) = s"|${characters(x).gridStats().padTo(cellWidth, ' ')}|"
 
-  for (row <- grid) do
-    println(row.mkString(""))
+    for (row <- grid) do
+      println(row.mkString(""))
+
+  end printMonsters
 
   def score(characters: Buffer[Character]): String =
     var aScore: Int = 0
