@@ -184,7 +184,9 @@ class Game:
 
   def welcomeMessage: String = welcome //todo: add high scores here
   
-  def goodbyeMessage: String = goodbye
+  def goodbyeMessage: String =
+    val extraScore = score(Characters)
+    goodbye + s"Your score was: ${this.extraScore}."
   
   def newWave(): Unit =
     if waveCount != 0 then
@@ -226,6 +228,14 @@ def printMonsters(monsters: Buffer[Monster], characters: Buffer[Character], mons
 
   for (row <- grid) do
     println(row.mkString(""))
+
+  def score(characters: Buffer[Character]): String =
+    var aScore: Int = 0
+    val sum: Int = characters.map(_.damageDoneInTotal).sum
+    aScore = aScore + sum
+    aScore.toString
+
+
 
 
   // for testing the logic of my program before committing it to the main functionality:

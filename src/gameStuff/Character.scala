@@ -6,6 +6,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
 
   protected var damageDone: Int = 0
+  protected var damageDonePerWave: Int = 0
   protected var currentHealth = health.max(0)
   protected var startingHealth = health
 
@@ -17,7 +18,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   protected val rangedAttackName: String
 
   def isDead: Boolean = currentHealth <= 0
-  def damageDoneInTotal: Int = damageDone
+  def damageDoneInTotal: Int = damageDonePerWave
   def isInMelee: Boolean = true
   def currentArmour = armour
 
@@ -89,6 +90,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     currentHealth = startingHealth
     armour += armourMod
     damagePerAttack += damageMod
+    damageDonePerWave += damageDone
     damageDone = 0
     toHit += (damageDone/2) * toHitMod
 
