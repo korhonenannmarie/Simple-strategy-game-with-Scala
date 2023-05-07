@@ -41,7 +41,7 @@ val rogueDamageMod = 2
 val monsterHealth = 10
 val monsterArmour = 10
 val monsterToHit = 10
-val monsterDamage = 10
+val monsterDamage = 5
 val monsterShield = 10
 
 val monsterArmourMod = 2

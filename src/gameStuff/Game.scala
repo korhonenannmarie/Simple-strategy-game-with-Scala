@@ -80,11 +80,11 @@ class Game:
     def execute(character: Character): Option[String] =
       verb match
         case "attack" if !target.get.isDead => Some(character.attack(target.get))
-        case "heal" if actor.isInstanceOf[Mage]  => Some(character.asInstanceOf[Mage].heal(target.get))
-        case "crossbow" if actor.isInstanceOf[Rogue] && !target.get.isDead => Some(character.asInstanceOf[Rogue].rangedAttack(target.get))
-        case "protect" if actor.isInstanceOf[Fighter] => Some(character.asInstanceOf[Fighter].protect(target.get))
-        case "longbow" if actor.isInstanceOf[Fighter] && !target.get.isDead => Some(character.asInstanceOf[Fighter].rangedAttack(target.get))
-        case "fireball" if actor.isInstanceOf[Mage] && !target.get.isDead => Some(character.asInstanceOf[Mage].rangedAttack(target.get))
+        case "heal" if actor.get.isInstanceOf[Mage]  => Some(character.asInstanceOf[Mage].heal(target.get))
+        case "crossbow" if actor.get.isInstanceOf[Rogue] && !target.get.isDead => Some(character.asInstanceOf[Rogue].rangedAttack(target.get))
+        case "protect" if actor.get.isInstanceOf[Fighter] => Some(character.asInstanceOf[Fighter].protect(target.get))
+        case "longbow" if actor.get.isInstanceOf[Fighter] && !target.get.isDead => Some(character.asInstanceOf[Fighter].rangedAttack(target.get))
+        case "fireball" if actor.get.isInstanceOf[Mage] && !target.get.isDead => Some(character.asInstanceOf[Mage].rangedAttack(target.get))
         case other => None
 
     def noTargetExecute(character: Character): Option[String] =
@@ -116,10 +116,11 @@ class Game:
 
     val outcomeReport: Option[String] =
       if doingStuff.isDefined then
-        Some(s"${doingStuff.get}\n" + s"${mage.currentStats()} ${fighter.currentStats()} ${rogue.currentStats()}")
+        Some(s"${doingStuff.get}\n")
 
       else
         doingStuff match
+          case None if strActor == "help" => None
           case None if actor.isEmpty =>
             println("You must specify a valid character name.")
             None
@@ -157,7 +158,7 @@ class Game:
     val monsterInfo =
       for (a,b) <- monsterLocations yield
         s" $a is at $b distance"
-    s"There are $monsterAmount monsters here." + monsterInfo.mkString(",")
+    s"There are $monsterAmount monsters here."
 
   def chooseMonster(monsters: Buffer[Monster]): Monster =
     val alives = monsters.filter(!_.isDead)

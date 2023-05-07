@@ -6,7 +6,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
 
   protected var damageDone: Int = 0
-  protected var currentHealth = health
+  protected var currentHealth = health.max(0)
   protected var startingHealth = health
 
   protected val armourMod: Int
