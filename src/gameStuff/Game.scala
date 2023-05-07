@@ -28,6 +28,10 @@ class Game:
   val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
   val Monsters: Buffer[Monster] = Buffer()
 
+  val monsterAmount = Monsters.size
+  val monsterPositions =
+    Monsters.map(m =>
+      ((m.distance), Monsters.indexOf(m)))
 
 
 // todo: add high score stuff
@@ -36,6 +40,7 @@ class Game:
     while !this.isOver do
       this.newWave()
       while !this.isOver && !this.waveIsOver do
+        printMonsters(monsterAmount, monsterPositions)
         val command = readLine("\nCommand:")
         val turnReport = this.playTurn(command)
         if turnReport.nonEmpty then
@@ -43,10 +48,8 @@ class Game:
           if Monsters.exists(!_.isDead) then
             this.monstersTurn()
           Characters.foreach(_.resetForNewTurn())
-        println(testingInfo())
       waveCount += 1
     println(this.goodbyeMessage)
-
   end playGame
 
 
@@ -203,6 +206,25 @@ class Game:
       case "monster3" => Some(Monsters(2))
       case other => None
 
+
+def printMonsters(numMonsters: Int, monsterPositions: Buffer[(Int, Int)]): Unit =
+  val gridSize = 3
+  val near = 0
+  val far = 1
+
+  val grid = Array.fill(gridSize, gridSize)(0)
+
+  for ((position, monsterIndex) <- monsterPositions) do
+    val (row, col) =
+      position match
+        case near => (gridSize / 2, if (numMonsters == 1) gridSize / 2 else gridSize / 3)
+        case far => (gridSize / 2, if (numMonsters == 1) gridSize - 1 - gridSize / 2 else 2 * gridSize / 3)
+
+    grid(row)(col) =
+      monsterIndex
+
+  for (row <- grid) do
+    println(row.mkString(" "))
 
   // for testing the logic of my program before committing it to the main functionality:
   def testingInfo(): String =

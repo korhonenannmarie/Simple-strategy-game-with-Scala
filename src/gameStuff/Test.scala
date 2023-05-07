@@ -1,3 +1,0 @@
-package gameStuff
-
-class Test
