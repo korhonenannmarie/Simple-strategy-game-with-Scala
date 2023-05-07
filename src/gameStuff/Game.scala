@@ -28,7 +28,6 @@ class Game:
   val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
   val Monsters: Buffer[Monster] = Buffer()
 
-  val monsterAmount = Monsters.size
   val monsterPositions =
     Monsters.map(m =>
       ((m.distance), Monsters.indexOf(m)))
@@ -40,7 +39,7 @@ class Game:
     while !this.isOver do
       this.newWave()
       while !this.isOver && !this.waveIsOver do
-        printMonsters(monsterAmount, monsterPositions)
+        printMonsters(Monsters, monsterPositions)
         val command = readLine("\nCommand:")
         val turnReport = this.playTurn(command)
         if turnReport.nonEmpty then
@@ -207,29 +206,31 @@ class Game:
       case other => None
 
 
-def printMonsters(numMonsters: Int, monsterPositions: Buffer[(Int, Int)]): Unit =
+def printMonsters(monsters: Buffer[Monster], monsterPositions: Buffer[(Int, Int)]): Unit =
   val gridSize = 3
-  val near = 0
-  val far = 1
+  val positions = Array((gridSize / 2, gridSize / 3), (gridSize / 2, gridSize / 2), (gridSize / 2, 2 * gridSize / 3))
 
-  val grid = Array.fill(gridSize, gridSize)(0)
+  val grid = Array.fill(gridSize, gridSize)(" ")
 
-  for ((position, monsterIndex) <- monsterPositions) do
-    val (row, col) =
-      position match
-        case near => (gridSize / 2, if (numMonsters == 1) gridSize / 2 else gridSize / 3)
-        case far => (gridSize / 2, if (numMonsters == 1) gridSize - 1 - gridSize / 2 else 2 * gridSize / 3)
+  for (m <- monsters) do
+    val (position, monsterIndex) = monsterPositions(monsters.indexOf(m))
+    val (row, col) = positions(monsters.indexOf(m))
+    if (position == 0) then
+      grid(row)(col) = "X"
+    else
+      grid(row-1)(col) = "X"
 
-    grid(row)(col) =
-      monsterIndex
 
   for (row <- grid) do
     println(row.mkString(" "))
 
+
+
+
   // for testing the logic of my program before committing it to the main functionality:
-  def testingInfo(): String =
+/**  def testingInfo(): String =
     Characters.map(x => x.currentStats()).mkString("") + "\n" +
     Monsters.map(x => x.currentStats()).mkString("") + "\n" +
     Monsters.map(x => x.currentDis).mkString("") + "\n" +
     s"$currentRound \n" +
-    s"$currentWave \n"
+    s"$currentWave \n" */
