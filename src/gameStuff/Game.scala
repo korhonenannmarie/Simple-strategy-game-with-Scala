@@ -7,17 +7,14 @@ import scala.io.StdIn.readLine
 import scala.util.Random
 class Game:
 
-  private var currentScore: Int       = 0
-  private var highScores: Buffer[Int] = Buffer()
-  private var roundIsOver: Boolean    = false
-  private var wavesAreDone: Boolean   = false
   private var waveCount: Int          = 0
+  private var currentScore: Int       = 0         // final score that comes from the total damage done, armour added by protection and health healed
 
   def currentWave: Int  = waveCount
-
   def waveIsOver: Boolean = Monsters.forall(_.isDead)
   def isOver: Boolean = Characters.forall(_.isDead) || waveCount == maxWave
 
+  // player characters are created immediately
   private val mage: Mage = Mage(mageName, mageHealth, mageArmour, mageToHit, mageDamage, mageShield)
   private val fighter: Fighter = Fighter(fighterName, fighterHealth, fighterArmour, fighterToHit, fighterDamage, fighterShield)
   private val rogue: Rogue = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
@@ -26,55 +23,59 @@ class Game:
   val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
   val Monsters: Buffer[Monster] = Buffer()
 
-  def monsterPositions =
-    Monsters.map(m =>
-      ((m.distance), Monsters.indexOf(m)))
 
-  def characterPositions =
-    Characters.map(c =>
-      ((2), Characters.indexOf(c)))
 
-// todo: add high score stuff
+  // Loop of the game
   def playGame() =
-    println(this.welcomeMessage)
-    while !this.isOver do
+
+    println(this.welcomeMessage) // prints the starting information
+
+    while !this.isOver do // loop that creates new waves when they end
       this.newWave()
       while !this.isOver && !this.waveIsOver do
-        printMonsters(Monsters, Characters, monsterPositions, characterPositions)
-        val command = readLine(commandLine)
-        val turnReport = this.playTurn(command)
+
+        printMonsters(Monsters, Characters, monsterPositions, characterPositions) // grid displaying monsters, characters etc.
+        val command = readLine(commandLine) // user input call
+        val turnReport = this.playTurn(command) // what ends up happening with the user input
+
         if turnReport.nonEmpty then
           println(turnReport.get)
-          if Monsters.exists(!_.isDead) then
+          if Monsters.exists(!_.isDead) then // if there are monsters left alive, it's their turn
             this.monstersTurn()
-          Characters.foreach(_.resetForNewTurn())
-      waveCount += 1
+          Characters.foreach(_.resetForNewTurn()) // characters are reset for the new turn
+
+      waveCount += 1 // once a new wave starts, the wave count goes up
+
     println(this.goodbyeMessage)
   end playGame
 
 
-
+  // this is the bread and butter of how the game works
   def playTurn(command: String): Option[String] =
 
+    // user input is disected
     val commandText               = command.trim.toLowerCase
     val strActor: String          = commandText.takeWhile( _ != ' ' ).trim
     val verb: String              = commandText.drop(strActor.length).trim.takeWhile( _ != ' ' ).trim
     val strTarget: String         = commandText.split("\\s+").drop(2).mkString(" ")
 
-    val target: Option[Character] =
-      if Characters.map(_.characterName.toLowerCase).contains(strTarget) || Monsters.map(_.characterName.toLowerCase).contains(strTarget) then
-        str2character(strTarget)
-      else
-        None
-
+    // changing the actor to type Option[Character]
     val actor: Option[Character] =
       if Characters.map(_.characterName.toLowerCase).contains(strActor) then
         str2character(strActor)
       else
         None
 
-    //todo: make a list of possible command words and insert that in these instead
-    //todo: commands such as help, end game, etc.
+    // changing the target to type Option[Character]
+    val target: Option[Character] =
+      if Characters.map(_.characterName.toLowerCase).contains(strTarget) || Monsters.map(_.characterName.toLowerCase).contains(strTarget) then
+        str2character(strTarget)
+      else
+        None
+  end playTurn
+
+
+    // Action options with an actor, action and target
     def execute(character: Character): Option[String] =
       verb match
         case "attack" if !target.get.isDead => Some(character.attack(target.get))
@@ -85,12 +86,14 @@ class Game:
         case "fireball" if actor.get.isInstanceOf[Mage] && !target.get.isDead => Some(character.asInstanceOf[Mage].rangedAttack(target.get))
         case other => None
 
+    // Actions without a target
     def noTargetExecute(character: Character): Option[String] =
       verb match
         case "rest" => Some(character.rest())
         case "defend" => Some(character.defend())
         case other => None
 
+    // Actions with no effect
     def simpleExecute(command: String): Option[String] =
       command match
         case "help"=>
@@ -99,7 +102,9 @@ class Game:
         case other =>
           None
 
-    val doingStuff: Option[String] =
+    // execute option is chosen here
+
+    val somethingHappens: Option[String] =
       if actor.nonEmpty && !(actor.get.isDead) then
         if target.nonEmpty then
           execute(actor.get)
@@ -112,12 +117,13 @@ class Game:
       else
         None
 
+    // final report of what happens, including user input error handling
     val outcomeReport: Option[String] =
-      if doingStuff.isDefined then
-        Some(s"${doingStuff.get}\n")
 
+      if somethingHappens.isDefined then
+        Some(s"${somethingHappens.get}\n")
       else
-        doingStuff match
+        somethingHappens match
           case None if strActor == "help" => None
           case None if actor.isEmpty =>
             println("You must specify a valid character name.")
@@ -133,30 +139,54 @@ class Game:
             None
 
     outcomeReport
-
   end playTurn
 
+  // creates a new set of monsters and modifies the existing characters
+  def newWave(): Unit =
+
+    if waveCount != 0 then
+      Characters.foreach(_.modifyForNewWave())
+      Monsters.clear()
+      val info = setMonsters()
+      Monsters.foreach(_.modifyForNewWave())
+      println(info)
+
+    else
+      println(setMonsters())
+  end newWave
+
+  // A monster is chosen, then it moves and chooses who to attack. Then it attacks.
   def monstersTurn() =
     val monster = chooseMonster(Monsters)
     monster.move(Characters)
     val outcome = monster.attack(monster.chooseTarget(Characters))
     println(outcome)
+  end monstersTurn
 
-// make this more generic
+  // Creates 1-3 monsters for the player characters to fight against.
   def setMonsters(): String =
+
     val monsterAmount: Int = Random.between(1,4)
+    val a: Int             = waveCount // Affects how much the monsters get better
+
     for i <- 1 to monsterAmount do
-      val m = Monster(s"Monster$i", monsterHealth, monsterArmour, monsterToHit, monsterDamage, monsterShield, Random.between(0,2)) // todo: make extendable
+      val m = Monster(s"Monster$i", monsterHealth + a * healthMod, monsterArmour + a * armourMod, monsterToHit + a * toHitMod, monsterDamage + a * damageMod, monsterShield, Random.between(0,2)) // todo: make extendable
       Monsters += m
+
+    // sets the monster(s) either far away or near the character
     val monsterLocations = Monsters.map(monster => (monster.characterName,
       monster.currentDis match
         case 1 => "melee"
         case 0 => "far away"))
+
     val monsterInfo =
       for (a,b) <- monsterLocations yield
         s" $a is at $b distance"
-    s"There are $monsterAmount monsters here."
 
+    s"There are $monsterAmount monsters here." + monsterInfo
+  end setMonsters
+
+  // decides which monster gets to attack in this round
   def chooseMonster(monsters: Buffer[Monster]): Monster =
     val alives = monsters.filter(!_.isDead)
     val ableToHit = alives.filter(monster => Characters.filter(!_.isDead).exists(character => monster.toHitDef >= character.healthDef))
@@ -165,8 +195,7 @@ class Game:
     else
       alives.maxBy(_.healthDef)
 
-
-
+  // Tells the user all the available commands
   def help(): Unit =
     println("Available commands:")
     println("- <character> attack <target>")
@@ -179,25 +208,22 @@ class Game:
     println("- <character> defend")
     println("- help")
 
-  def welcomeMessage: String = welcome //todo: add high scores here
+
+  // returns the score of the game.
+  def score(characters: Buffer[Character]): String =
+    var aScore: Int = 0
+    val sum: Int = characters.map(_.damageDoneTotalDef).sum
+    aScore = aScore + sum
+    aScore.toString
+
+  // welcome and goodbye messages at the beginning and the end of the game.
+  def welcomeMessage: String = welcome + help()
   
   def goodbyeMessage: String =
     val extraScore = score(Characters)
     goodbye + s"Your score was: ${extraScore}."
-  
-  def newWave(): Unit =
-    if waveCount != 0 then
-      Characters.foreach(_.modifyForNewWave())
-      Monsters.clear()
-      val info = setMonsters()
-      Monsters.foreach(_.modifyForNewWave())
-      println(info)
-    else
-      println(setMonsters())
 
-
-
-  // this isn't super extendable... // todo: think of a more general option
+  // transforms strings into characters
   def str2character(str: String): Option[Character] =
     str match
       case "mage" => Some(mage)
@@ -208,6 +234,16 @@ class Game:
       case "monster3" => Some(Monsters(2))
       case other => None
 
+
+
+// VISUALS
+  def monsterPositions =
+    Monsters.map(m =>
+      ((m.distance), Monsters.indexOf(m)))
+
+  def characterPositions =
+    Characters.map(c =>
+      ((2), Characters.indexOf(c)))
 
   def printMonsters(monsters: Buffer[Monster], characters: Buffer[Character], monsterPositions: Buffer[(Int, Int)], characterPositions: Buffer[(Int, Int)]): Unit =
     val gridSize = 3
@@ -228,11 +264,6 @@ class Game:
 
   end printMonsters
 
-  def score(characters: Buffer[Character]): String =
-    var aScore: Int = 0
-    val sum: Int = characters.map(_.damageDoneTotalDef).sum
-    aScore = aScore + sum
-    aScore.toString
 
 
 

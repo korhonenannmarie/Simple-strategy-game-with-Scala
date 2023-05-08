@@ -51,8 +51,9 @@ val monsterToHitMod = 2
 
 
 
-val welcome = "Welcome to the game"
-val goodbye = "Goodbye for now"
+val welcome = "Welcome to the game! You have three characters: the mage, the rogue and the fighter.\nYour goal is to kill as many monsters as possible "
++ "without dying yourself! \nEach wave will create new monsters, and depending on how you used your characters, will also affect their stats. \nGood luck! \nThe available commands are: \n"
+val goodbye = "Thank you for playing. Goodbye for now"
 
 val commandLine = "\nWhat do you do next?:"
 
