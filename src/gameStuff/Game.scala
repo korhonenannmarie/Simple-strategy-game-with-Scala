@@ -7,14 +7,12 @@ import scala.io.StdIn.readLine
 import scala.util.Random
 class Game:
 
-  private var roundCount: Int         = 0
   private var currentScore: Int       = 0
   private var highScores: Buffer[Int] = Buffer()
   private var roundIsOver: Boolean    = false
   private var wavesAreDone: Boolean   = false
   private var waveCount: Int          = 0
 
-  def currentRound: Int = roundCount
   def currentWave: Int  = waveCount
 
   def waveIsOver: Boolean = Monsters.forall(_.isDead)
@@ -142,7 +140,6 @@ class Game:
     val monster = chooseMonster(Monsters)
     monster.move(Characters)
     val outcome = monster.attack(monster.chooseTarget(Characters))
-    roundCount += 1
     println(outcome)
 
 // make this more generic

@@ -8,11 +8,12 @@ class Fighter(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   val damageMod = fighterDamageMod
   val toHitMod = mageToHitMod
 
-  val rangedAttackName = "longbow"
-  val defendingName = "raises up their shield"
+  val rangedAttackName  = "longbow"
+  val defendingName     = "raises up their shield"
 
-
+  // Method specifically for the fighter. Protects the fighter AND the target.
   def protect(target: Character) =
     target.defend()
     this.defend()
+    damageDone += shield
     s"the fighter raises their shield to defend themselves and ${target.characterName}"

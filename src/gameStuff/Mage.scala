@@ -15,7 +15,9 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
   val rangedAttackName = "fireball"
   val defendingName    = "raises up their magical wards"
 
+  // Method specifically for the mage. Heals the target.
   def heal(target: Character): String =
     val a = target.beHealed(healingDone)
+    damageDone += healingDone
     s"${target.characterName} is healed $a health points."
     
