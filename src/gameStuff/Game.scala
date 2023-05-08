@@ -43,7 +43,7 @@ class Game:
       this.newWave()
       while !this.isOver && !this.waveIsOver do
         printMonsters(Monsters, Characters, monsterPositions, characterPositions)
-        val command = readLine("\nCommand:")
+        val command = readLine(commandLine)
         val turnReport = this.playTurn(command)
         if turnReport.nonEmpty then
           println(turnReport.get)
@@ -233,7 +233,7 @@ class Game:
 
   def score(characters: Buffer[Character]): String =
     var aScore: Int = 0
-    val sum: Int = characters.map(_.damageDoneInTotal).sum
+    val sum: Int = characters.map(_.damageDoneTotalDef).sum
     aScore = aScore + sum
     aScore.toString
 

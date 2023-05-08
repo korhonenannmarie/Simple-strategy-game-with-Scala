@@ -54,3 +54,6 @@ val monsterToHitMod = 2
 val welcome = "Welcome to the game"
 val goodbye = "Goodbye for now"
 
+val commandLine = "\nWhat do you do next?:"
+
+

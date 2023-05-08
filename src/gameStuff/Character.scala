@@ -5,10 +5,10 @@ abstract class Character(protected val name: String, protected val health: Int, 
                          protected var damagePerAttack: Int, protected val shield: Int):
 
 
-  protected var damageDone: Int = 0
-  protected var damageDonePerWave: Int = 0
-  protected var currentHealth = health.max(0)
-  protected var startingHealth = health
+  protected var damageDone: Int = 0 // All the damage a character does in a wave, is later saved to damageDoneTotal Mainly relevant for player characters.
+  protected var damageDoneTotal: Int = 0 // All the damage a character has done in the entire game
+  protected var currentHealth = health.max(0) // The character's curent health. Is changed by takeDamage and beHealed methods.
+  protected var startingHealth = health // A way to save the max health of a character at the beginning of a wave
 
   protected val armourMod: Int
   protected val healthMod: Int
@@ -18,17 +18,18 @@ abstract class Character(protected val name: String, protected val health: Int, 
   protected val rangedAttackName: String
 
   def isDead: Boolean = currentHealth <= 0
-  def damageDoneInTotal: Int = damageDonePerWave
+  def damageDoneTotalDef: Int = damageDoneTotal
   def isInMelee: Boolean = true
   def currentArmour = armour
+  def healthToAttacker: Int = currentHealth
 
 
   def attack(target: Character): String =
     if target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, this) then
       damageDone += damagePerAttack
-      s"${target.characterName} takes $damagePerAttack damage.\n"
+      s"The attack hits! \n${target.characterName} takes $damagePerAttack damage."
     else
-      "The attack does not hit.\n"
+      "\nThe attack does not hit."
 
   def rangedAttack(target: Character): String =
     if (!target.isInMelee && this.toHit >= target.currentToHit) then
@@ -37,9 +38,9 @@ abstract class Character(protected val name: String, protected val health: Int, 
         damageDone += damagePerAttack
         s"${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
       else
-        s"${target.characterName} has armour that was too high. The $rangedAttackName attack does not hit. \n"
+        s"${target.characterName}'s armour was too high. The $rangedAttackName attack does not hit. \n"
       else if (target.isInMelee)
-      s"${target.characterName} is in melee. The $rangedAttackName attack does not hit."
+      s"${target.characterName} is in melee. The $rangedAttackName attack is ranged, so it does not hit."
       else
       s"${target.characterName} evades the $rangedAttackName attack."
       
@@ -54,7 +55,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def defend(): String =
     armour += shield
     defending = true
-    s"the ${this.name} raises their shield for the turn. Your armour is increased.\n"
+    s"The ${this.name} raises their shield for the turn. Their armour is increased.\n"
   
   def resetForNewTurn(): Unit =
     if defending then
@@ -64,7 +65,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def takeDamage(damage: Int, toHit: Int, attacker: Character): Boolean =
     if armour <= toHit then
       if currentHealth > 0 then
-        currentHealth += -damage
+        currentHealth = (currentHealth - damage).max(0)
         true
       else
         false
@@ -90,19 +91,16 @@ abstract class Character(protected val name: String, protected val health: Int, 
     currentHealth = startingHealth
     armour += armourMod
     damagePerAttack += damageMod
-    damageDonePerWave += damageDone
+    damageDoneTotal += damageDone
     damageDone = 0
     toHit += (damageDone/2) * toHitMod
 
-  def rest(): String = "You rest for a while.\n"
-
-  def currentStats(): String =
-    s"$name has a health of $currentHealth/$startingHealth. Their current armour is $armour. \n"
+  def rest(): String = s"The ${this.characterName} rests for a while.\n"
 
   def gridStats(): String =
     s"$name HP:$currentHealth/$startingHealth AC:$currentArmour/$armour"
     
-  def healthToAttacker: Int = currentHealth
+
 
 end Character
 
