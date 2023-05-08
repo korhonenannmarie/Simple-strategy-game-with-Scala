@@ -11,3 +11,4 @@ class Rogue(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack:
   val toHitMod = mageToHitMod
 
   val rangedAttackName = "crossbow"
+  val defendingName = "goes into a protective stance"

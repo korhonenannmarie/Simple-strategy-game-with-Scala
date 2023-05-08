@@ -162,11 +162,11 @@ class Game:
 
   def chooseMonster(monsters: Buffer[Monster]): Monster =
     val alives = monsters.filter(!_.isDead)
-    val ableToHit = alives.filter(monster => Characters.filter(!_.isDead).exists(character => monster.currentToHit >= character.healthToAttacker))
+    val ableToHit = alives.filter(monster => Characters.filter(!_.isDead).exists(character => monster.toHitDef >= character.healthDef))
     if !ableToHit.isEmpty then
-      ableToHit.maxBy(_.healthToAttacker)
+      ableToHit.maxBy(_.healthDef)
     else
-      alives.maxBy(_.healthToAttacker)
+      alives.maxBy(_.healthDef)
 
 
 

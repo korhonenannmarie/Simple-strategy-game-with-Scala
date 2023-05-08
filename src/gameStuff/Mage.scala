@@ -13,6 +13,7 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
   val toHitMod = mageToHitMod
 
   val rangedAttackName = "fireball"
+  val defendingName    = "raises up their magical wards"
 
   def heal(target: Character): String =
     val a = target.beHealed(healingDone)

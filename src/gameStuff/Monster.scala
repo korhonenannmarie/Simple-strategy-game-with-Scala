@@ -15,6 +15,7 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   val toHitMod  = monsterToHitMod
 
   val rangedAttackName = "thisShouldntExist"
+  val defendingName = "thisShouldntExistEither"
 
   private var whoAttackedLast: Option[Character] = None
 
@@ -41,7 +42,7 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
       false
 
   def move(characters: Buffer[Character]): Unit =
-    val mostDangerous = characters.filter(!_.isDead).maxBy(_.healthToAttacker)
+    val mostDangerous = characters.filter(!_.isDead).maxBy(_.healthDef)
     mostDangerous match
       case r: Rogue => r.isInMelee
       case f: Fighter => !f.isInMelee
@@ -56,8 +57,8 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
         case None => false) then
       whoAttackedLast.get
     else
-      val ableToHit = alives.filter(_.currentArmour <= toHit)
+      val ableToHit = alives.filter(_.armourDef <= toHit)
       if !ableToHit.isEmpty then
-        ableToHit.maxBy(_.healthToAttacker)
+        ableToHit.maxBy(_.healthDef)
       else
-        alives.maxBy(_.healthToAttacker)
+        alives.maxBy(_.healthDef)

@@ -9,6 +9,7 @@ class Fighter(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   val toHitMod = mageToHitMod
 
   val rangedAttackName = "longbow"
+  val defendingName = "raises up their shield"
 
 
   def protect(target: Character) =
