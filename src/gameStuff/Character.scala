@@ -28,9 +28,10 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def armourDef: Int          = armour
   def healthDef: Int          = currentHealth
   def toHitDef: Int           = toHit
+  def gridStats(): String     = s"$name HP:$currentHealth/$maxHealth AC:$armourDef/$armour" // used in the game's visuals
 
 
-  // basic attack for player characters, the monster class has this overridden.
+  // Basic attack for player characters, the monster class has this overridden.
   def attack(target: Character): String =
 
     if target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, this) then
@@ -40,7 +41,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
       "\nThe attack does not hit."
   end attack
 
-  // basic ranged attack for player characters, monsters do not use this (yet?)
+  // Basic ranged attack for player characters, monsters do not use this (yet?)
   def rangedAttack(target: Character): String =
 
     if (!target.isInMelee && this.toHit >= target.toHitDef) then
@@ -56,17 +57,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
       s"${target.characterName} evades the $rangedAttackName attack."
   end rangedAttack
 
-  // defending for each character
-  def defend(): String =
-    armour += shield
-    defending = true
-    s"The ${this.name} ${this.defendingName} for the turn. Their armour is increased by $shield.\n"
-  
-  def resetForNewTurn(): Unit =
-    if defending then
-      armour += -shield
-      defending = false
-
+  // Method called by other characters when this character is attacked
   def takeDamage(damage: Int, toHit: Int, attacker: Character): Boolean =
     if armour <= toHit then
       if currentHealth > 0 then
@@ -77,7 +68,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     else
       false
 
-
+  // Method called by other characters when this character is healed
   def beHealed(healingDone: Int): Int =
     if this.isDead then
       currentHealth = healingDone
@@ -90,7 +81,19 @@ abstract class Character(protected val name: String, protected val health: Int, 
       currentHealth += healingDone
       healingDone
 
-  
+  // Defending system for the round for each (player) character
+  def defend(): String =
+    armour += shield
+    defending = true
+    s"The ${this.name} ${this.defendingName} for the turn. Their armour is increased by $shield.\n"
+
+  // Resets defending status (amongst possibly other things in the future) after the round is done
+  def resetForNewTurn(): Unit =
+    if defending then
+      armour += -shield
+      defending = false
+
+  // Changes the characters statistics dependinig on how well they did on the previous round
   def modifyForNewWave(): Unit =
     maxHealth += (damageDone/2) * healthMod
     currentHealth = maxHealth
@@ -100,12 +103,8 @@ abstract class Character(protected val name: String, protected val health: Int, 
     damageDone = 0
     toHit += (damageDone/2) * toHitMod
 
+  // Mainly a testing method, but can be used in the game as well.
   def rest(): String = s"The ${this.characterName} rests for a while.\n"
-
-  def gridStats(): String =
-    s"$name HP:$currentHealth/$maxHealth AC:$armourDef/$armour"
-    
-
 
 end Character
 
