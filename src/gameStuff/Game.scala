@@ -72,7 +72,6 @@ class Game:
         str2character(strTarget)
       else
         None
-  end playTurn
 
 
     // Action options with an actor, action and target
@@ -141,6 +140,7 @@ class Game:
     outcomeReport
   end playTurn
 
+
   // creates a new set of monsters and modifies the existing characters
   def newWave(): Unit =
 
@@ -170,7 +170,7 @@ class Game:
     val a: Int             = waveCount // Affects how much the monsters get better
 
     for i <- 1 to monsterAmount do
-      val m = Monster(s"Monster$i", monsterHealth + a * healthMod, monsterArmour + a * armourMod, monsterToHit + a * toHitMod, monsterDamage + a * damageMod, monsterShield, Random.between(0,2)) // todo: make extendable
+      val m = Monster(s"Monster$i", monsterHealth + a, monsterArmour + a, monsterToHit + a, monsterDamage + a, monsterShield, Random.between(0,2)) // todo: make extendable
       Monsters += m
 
     // sets the monster(s) either far away or near the character
@@ -217,7 +217,7 @@ class Game:
     aScore.toString
 
   // welcome and goodbye messages at the beginning and the end of the game.
-  def welcomeMessage: String = welcome + help()
+  def welcomeMessage: String = welcome + println(help())
   
   def goodbyeMessage: String =
     val extraScore = score(Characters)

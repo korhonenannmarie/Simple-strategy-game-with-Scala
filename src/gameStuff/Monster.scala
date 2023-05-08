@@ -19,7 +19,6 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
 
   private var whoAttackedLast: Option[Character] = None
 
-
   def currentDis: Int = distance
 
   override def isInMelee: Boolean = currentDis == 1
