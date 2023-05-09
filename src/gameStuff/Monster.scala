@@ -8,7 +8,7 @@ import scala.collection.mutable.Buffer
 
 class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: Int, shield: Int, var distance: Int)
   extends Character(name, health, armour, toHit, damagePerAttack, shield):
-  
+
   val armourMod = monsterArmourMod
   val healthMod = monsterHealthMod
   val damageMod = monsterDamageMod

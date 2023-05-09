@@ -173,7 +173,15 @@ class Game:
     val a: Int             = waveCount // Affects how much the monsters get better
 
     for i <- 1 to monsterAmount do
-      val m = Monster(s"Monster$i", monsterHealth + a, monsterArmour + a, monsterToHit + a, monsterDamage + a, monsterShield, Random.between(0,2)) // todo: make extendable
+      // these should not be here lol, I should have made this updating system in Monster, like with Character.
+      val x         = waveCount
+      val armourMod = monsterArmourMod
+      val healthMod = monsterHealthMod
+      val damageMod = monsterDamageMod
+      val toHitMod  = monsterToHitMod
+
+      val m = Monster(s"Monster$i", monsterHealth + x * healthMod, monsterArmour + x * armourMod,
+                      monsterToHit + x * toHitMod, monsterDamage + x * damageMod, monsterShield, Random.between(0,2))
       Monsters += m
 
     // sets the monster(s) either far away or near the character
