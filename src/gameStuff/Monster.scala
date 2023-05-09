@@ -23,7 +23,10 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   // attacking for monsters is simpler than with player characters
   override def attack(target: Character) = 
     if target.takeDamage(this.damagePerAttack, this.toHit, this) then
-      s"The attack by ${this.name} hits! ${target.characterName} takes $damagePerAttack damage."
+      if target.isDead then
+        s"\n${target.characterName} dies."
+      else
+        s"The attack by ${this.name} hits! ${target.characterName} takes $damagePerAttack damage."
     else
       s"The attack by ${this.name} does not hit."
 

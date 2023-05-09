@@ -36,7 +36,10 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
     if target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, this) then
       waveDamage += damagePerAttack
-      s"\nThe attack hits! \n${target.characterName} takes $damagePerAttack damage."
+      if target.isDead then
+        s"\n${target.characterName} dies."
+      else
+        s"\nThe attack hits! \n${target.characterName} takes $damagePerAttack damage."
     else if !target.isInMelee then
       "\nThe target is too far away!"
     else
@@ -50,7 +53,10 @@ abstract class Character(protected val name: String, protected val health: Int, 
       val damage = target.takeDamage(this.damagePerAttack, this.toHit, this)
       if damage then
         waveDamage += damagePerAttack
-        s"\n${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
+        if target.isDead then
+          s"\n${target.characterName} dies.\n"
+        else
+          s"\n${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
       else
         s"\n${target.characterName}'s armour was too high. The $rangedAttackName attack does not hit. \n"
       else if (target.isInMelee)

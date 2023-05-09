@@ -239,7 +239,12 @@ class Game:
   
   def goodbyeMessage: String =
     val extraScore = score(Characters)
-    goodbye + s"Your score was: ${extraScore}."
+    if Characters.forall(_.isDead) then
+      "All of the characters died." + goodbye + s"Your score was: ${extraScore}."
+    else if waveCount == maxWave then
+      "The wave maximum was reached." + goodbye + s"Your score was: ${extraScore}."
+    else
+      goodbye + s"Your score was: ${extraScore}."
 
   // transforms strings into characters
   def str2character(str: String): Option[Character] =
