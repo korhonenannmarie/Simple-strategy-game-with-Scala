@@ -95,13 +95,13 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
   // Changes the characters statistics dependinig on how well they did on the previous round
   def modifyForNewWave(): Unit =
-    maxHealth += (damageDone/2) * healthMod
+    maxHealth += damageDone * healthMod
     currentHealth = maxHealth
-    armour += armourMod
-    damagePerAttack += damageMod
+    armour += damageDone * armourMod
+    damagePerAttack += damageDone * damageMod
+    toHit += damageDone * toHitMod
     damageDoneTotal += damageDone
     damageDone = 0
-    toHit += (damageDone/2) * toHitMod
 
   // Mainly a testing method, but can be used in the game as well.
   def rest(): String = s"The ${this.characterName} rests for a while.\n"
