@@ -1,7 +1,7 @@
 package gameStuff
 
 val maxWave = 2
-val monsterMax = 3
+val monsterMax = 3 // min 3 monsters!
 
 val mageName = "Mage"
 val mageHealth = 10
