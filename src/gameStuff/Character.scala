@@ -28,7 +28,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def armourDef: Int          = armour
   def healthDef: Int          = currentHealth
   def toHitDef: Int           = toHit
-  def gridStats(): String     = s"$name HP:$currentHealth/$maxHealth AC:$armourDef/$armour" // used in the game's visuals
+  def gridStats: String     = s"$name HP:$currentHealth/$maxHealth AC:$armourDef/$armour" // used in the game's visuals
 
 
   // Basic attack for player characters, the monster class has this overridden.
@@ -37,6 +37,8 @@ abstract class Character(protected val name: String, protected val health: Int, 
     if target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, this) then
       damageDone += damagePerAttack
       s"The attack hits! \n${target.characterName} takes $damagePerAttack damage."
+    else if !target.isInMelee then
+      "\nThe target is too far away!"
     else
       "\nThe attack does not hit."
   end attack

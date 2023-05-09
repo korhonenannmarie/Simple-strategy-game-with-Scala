@@ -7,7 +7,7 @@ import scala.io.StdIn.readLine
 import scala.util.Random
 class Game:
 
-  private var waveCount: Int          = 0
+  private var waveCount: Int          = 1
   private var currentScore: Int       = 0         // final score that comes from the total damage done, armour added by protection and health healed
 
   def currentWave: Int  = waveCount
@@ -146,7 +146,7 @@ class Game:
 
   // creates a new set of monsters and modifies the existing characters
   def newWave(): Unit =
-
+    println(s"\nWave $waveCount:")
     if waveCount != 0 then
       Characters.foreach(_.modifyForNewWave())
       Monsters.clear()
@@ -261,17 +261,17 @@ class Game:
 
   def printMonsters(monsters: Buffer[Monster], characters: Buffer[Character], monsterPositions: Buffer[(Int, Int)], characterPositions: Buffer[(Int, Int)]): Unit =
     val gridSize = 3
-    val cellWidth = (monsters.map(_.gridStats().length) ++ characters.map(_.gridStats().length)).max
+    val cellWidth = (monsters.map(_.gridStats.length) ++ characters.map(_.gridStats.length)).max
     val cellString = s"|${" " * (cellWidth)}|"
     val grid = Array.fill(gridSize, gridSize)(cellString)
 
     if monsters.nonEmpty then
       for (m <- monsters.indices) do
         val (row, col) = monsterPositions(m)
-        grid(row)(col) = s"|${monsters(m).gridStats().padTo(cellWidth, ' ')}|"
+        grid(row)(col) = s"|${monsters(m).gridStats.padTo(cellWidth, ' ')}|"
       for (x <- characters.indices) do
         val (row, col) = characterPositions(x)
-        grid(row)(col) = s"|${characters(x).gridStats().padTo(cellWidth, ' ')}|"
+        grid(row)(col) = s"|${characters(x).gridStats.padTo(cellWidth, ' ')}|"
 
     for (row <- grid) do
       println(row.mkString(""))
@@ -279,13 +279,3 @@ class Game:
   end printMonsters
 
 
-
-
-
-  // for testing the logic of my program before committing it to the main functionality:
-/**  def testingInfo(): String =
-    Characters.map(x => x.currentStats()).mkString("") + "\n" +
-    Monsters.map(x => x.currentStats()).mkString("") + "\n" +
-    Monsters.map(x => x.currentDis).mkString("") + "\n" +
-    s"$currentRound \n" +
-    s"$currentWave \n" */
