@@ -20,8 +20,8 @@ class Game:
   private val rogue: Rogue = Rogue(rogueName, rogueHealth, rogueArmour, rogueToHit, rogueDamage, rogueShield)
 
   // buffers containing all characters and all the monsters for that wave
-  val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
-  val Monsters: Buffer[Monster] = Buffer()
+  private val Characters: Buffer[Character] = Buffer(mage, fighter, rogue)
+  private val Monsters: Buffer[Monster] = Buffer()
 
 
 
@@ -282,4 +282,4 @@ class Game:
 
   end printMonsters
 
-
+end Game

@@ -15,5 +15,5 @@ class Fighter(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
   def protect(target: Character) =
     target.defend()
     this.defend()
-    damageDone += shield
+    waveDamage += shield
     s"the fighter raises their shield to defend themselves and ${target.characterName}"

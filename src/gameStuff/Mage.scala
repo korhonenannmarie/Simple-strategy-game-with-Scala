@@ -11,7 +11,7 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
   val damageMod = mageDamageMod
   val healingDone = mageHealingDone
   val toHitMod = mageToHitMod
-  val fireBallMod = mageRangedMod + damageDone / 5
+  val fireBallMod = mageRangedMod + waveDamage / 5
 
   val rangedAttackName = "fireball"
   val defendingName    = "raises up their magical wards"
@@ -19,7 +19,7 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
   // Method specifically for the mage. Heals the target.
   def heal(target: Character): String =
     val a = target.beHealed(healingDone)
-    damageDone += healingDone
+    waveDamage += healingDone
     s"${target.characterName} is healed $a health points."
     
   override def rangedAttack(target: Character): String =
@@ -27,7 +27,7 @@ class Mage(name: String, health: Int, armour: Int, toHit: Int, damagePerAttack: 
     if (!target.isInMelee && this.toHit >= target.toHitDef) then
       val damage = target.takeDamage(this.damagePerAttack + fireBallMod, this.toHit, this)
       if damage then
-        damageDone += damagePerAttack
+        waveDamage += damagePerAttack
         s"${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
       else
         s"The $rangedAttackName attack does not hit. The ${this.characterName} drops the bottle.\n"

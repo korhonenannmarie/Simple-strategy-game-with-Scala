@@ -5,7 +5,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
                          protected var damagePerAttack: Int, protected val shield: Int):
 
 
-  protected var damageDone: Int       = 0             // All the damage a character does in a wave, is later saved to damageDoneTotal Mainly relevant for player characters.
+  protected var waveDamage: Int       = 0             // All the damage a character does in a wave, is later saved to damageDoneTotal Mainly relevant for player characters.
   protected var damageDoneTotal: Int  = 0             // All the damage a character has done in the entire game
   protected var currentHealth         = health.max(0) // The character's curent health. Is changed by takeDamage and beHealed methods.
   protected var maxHealth             = health        // A way to save the max health of a character at the beginning of a wave, is changed by the modifyForNewWave method
@@ -23,7 +23,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def characterName: String   = this.name
   def isDead: Boolean         = currentHealth <= 0
   def isInMelee: Boolean      = true // More specifically for monsters, not really used for player characters (yet?)
-  def defeding: Boolean       = defending
+  def defedingDef: Boolean    = defending
   def damageDoneTotalDef: Int = damageDoneTotal
   def armourDef: Int          = armour
   def healthDef: Int          = currentHealth
@@ -35,7 +35,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def attack(target: Character): String =
 
     if target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, this) then
-      damageDone += damagePerAttack
+      waveDamage += damagePerAttack
       s"\nThe attack hits! \n${target.characterName} takes $damagePerAttack damage."
     else if !target.isInMelee then
       "\nThe target is too far away!"
@@ -49,7 +49,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     if (!target.isInMelee && this.toHit >= target.toHitDef) then
       val damage = target.takeDamage(this.damagePerAttack, this.toHit, this)
       if damage then
-        damageDone += damagePerAttack
+        waveDamage += damagePerAttack
         s"\n${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
       else
         s"\n${target.characterName}'s armour was too high. The $rangedAttackName attack does not hit. \n"
@@ -97,13 +97,13 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
   // Changes the characters statistics dependinig on how well they did on the previous round
   def modifyForNewWave(): Unit =
-    maxHealth += damageDone * healthMod
+    maxHealth += waveDamage * healthMod
     currentHealth = maxHealth
-    armour += damageDone * armourMod
-    damagePerAttack += damageDone * damageMod
-    toHit += damageDone * toHitMod
-    damageDoneTotal += damageDone
-    damageDone = 0
+    armour += waveDamage * armourMod
+    damagePerAttack += waveDamage * damageMod
+    toHit += waveDamage * toHitMod
+    damageDoneTotal += waveDamage
+    waveDamage = 0
 
   // Mainly a testing method, but can be used in the game as well.
   def rest(): String = s"\nThe ${this.characterName} rests for a while."
