@@ -7,7 +7,7 @@ import scala.io.StdIn.readLine
 import scala.util.Random
 class Game:
 
-  private var waveCount: Int          = 1
+  private var waveCount: Int          = 0
   private var currentScore: Int       = 0         // final score that comes from the total damage done, armour added by protection and health healed
 
   def currentWave: Int  = waveCount
@@ -34,6 +34,7 @@ class Game:
       this.newWave()
       while !this.isOver && !this.waveIsOver do
 
+        println("\n")
         printMonsters(Monsters, Characters, monsterPositions, characterPositions) // grid displaying monsters, characters etc.
         val command = readLine(commandLine) // user input call
         val turnReport = this.playTurn(command) // what ends up happening with the user input
@@ -136,8 +137,11 @@ class Game:
           case None if target.isEmpty =>
             println("\nUnknown target.")
             None
-          case None =>
+          case None if actor.nonEmpty && target.nonEmpty =>
             println("\nUnknown command. Type 'help' for a list of available commands.")
+            None
+          case None =>
+            println("\nFormatting error. Type 'help' for a list of available commands.")
             None
 
     outcomeReport
@@ -166,10 +170,10 @@ class Game:
     println(outcome)
   end monstersTurn
 
-  // Creates 1-3 monsters for the player characters to fight against.
+  // Creates 1 - max monster amount monsters for the player characters to fight against.
   def setMonsters(): String =
 
-    val monsterAmount: Int = Random.between(1,4)
+    val monsterAmount: Int = Random.between(1, ((monsterMax + 1)).max(3))
     val a: Int             = waveCount // Affects how much the monsters get better
 
     for i <- 1 to monsterAmount do
@@ -257,10 +261,10 @@ class Game:
 
   def characterPositions =
     Characters.map(c =>
-      ((2), Characters.indexOf(c)))
+      (((monsterMax - 1).max(2)), Characters.indexOf(c)))
 
   def printMonsters(monsters: Buffer[Monster], characters: Buffer[Character], monsterPositions: Buffer[(Int, Int)], characterPositions: Buffer[(Int, Int)]): Unit =
-    val gridSize = 3
+    val gridSize = monsterMax.max(3)
     val cellWidth = (monsters.map(_.gridStats.length) ++ characters.map(_.gridStats.length)).max
     val cellString = s"|${" " * (cellWidth)}|"
     val grid = Array.fill(gridSize, gridSize)(cellString)

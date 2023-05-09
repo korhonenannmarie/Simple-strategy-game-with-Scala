@@ -1,6 +1,7 @@
 package gameStuff
 
-val maxWave = 5
+val maxWave = 2
+val monsterMax = 3
 
 val mageName = "Mage"
 val mageHealth = 10
@@ -54,7 +55,7 @@ val monsterToHitMod = 5
 
 val welcome = "\nWelcome to the game! You have three characters: the mage, the rogue and the fighter.\nYour goal is to kill as many monsters as possible "
 + "without dying yourself! \nEach wave will create new monsters, and depending on how you used your characters, will also affect their stats. \nGood luck!\n"
-val goodbye = "\nThank you for playing. Goodbye for now"
+val goodbye = "\nThank you for playing. Goodbye for now. "
 
 val commandLine = "\nWhat do you do next?:"
 

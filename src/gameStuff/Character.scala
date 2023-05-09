@@ -36,7 +36,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
 
     if target.isInMelee && target.takeDamage(this.damagePerAttack, this.toHit, this) then
       damageDone += damagePerAttack
-      s"The attack hits! \n${target.characterName} takes $damagePerAttack damage."
+      s"\nThe attack hits! \n${target.characterName} takes $damagePerAttack damage."
     else if !target.isInMelee then
       "\nThe target is too far away!"
     else
@@ -50,13 +50,13 @@ abstract class Character(protected val name: String, protected val health: Int, 
       val damage = target.takeDamage(this.damagePerAttack, this.toHit, this)
       if damage then
         damageDone += damagePerAttack
-        s"${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
+        s"\n${target.characterName} takes $damagePerAttack damage from ${this.characterName}'s ${rangedAttackName}.\n"
       else
-        s"${target.characterName}'s armour was too high. The $rangedAttackName attack does not hit. \n"
+        s"\n${target.characterName}'s armour was too high. The $rangedAttackName attack does not hit. \n"
       else if (target.isInMelee)
-      s"${target.characterName} is in melee. The $rangedAttackName attack is ranged, so it does not hit."
+      s"\n${target.characterName} is in melee. The $rangedAttackName attack is ranged, so it does not hit."
       else
-      s"${target.characterName} evades the $rangedAttackName attack."
+      s"\n${target.characterName} evades the $rangedAttackName attack."
   end rangedAttack
 
   // Method called by other characters when this character is attacked
@@ -87,7 +87,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
   def defend(): String =
     armour += shield
     defending = true
-    s"The ${this.name} ${this.defendingName} for the turn. Their armour is increased by $shield.\n"
+    s"\nThe ${this.name} ${this.defendingName} for the turn. Their armour is increased by $shield.\n"
 
   // Resets defending status (amongst possibly other things in the future) after the round is done
   def resetForNewTurn(): Unit =
@@ -106,7 +106,7 @@ abstract class Character(protected val name: String, protected val health: Int, 
     damageDone = 0
 
   // Mainly a testing method, but can be used in the game as well.
-  def rest(): String = s"The ${this.characterName} rests for a while.\n"
+  def rest(): String = s"\nThe ${this.characterName} rests for a while."
 
 end Character
 
