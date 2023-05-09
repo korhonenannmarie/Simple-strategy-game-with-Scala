@@ -28,7 +28,7 @@ class Game:
   // Loop of the game
   def playGame() =
 
-    println(this.welcomeMessage) // prints the starting information
+    this.welcomeMessage // prints the starting information
 
     while !this.isOver do // loop that creates new waves when they end
       this.newWave()
@@ -125,16 +125,19 @@ class Game:
         somethingHappens match
           case None if strActor == "help" => None
           case None if actor.isEmpty =>
-            println("You must specify a valid character name.")
+            println("\nYou must specify a valid character name.")
             None
           case None if actor.get.isDead =>
-            println("You can't do anything because this character is dead.")
+            println("\nYou can't do anything because this character is dead.")
             None
           case None if target.nonEmpty && target.get.isDead =>
-            println("You can't target a dead character.")
+            println("\nYou can't target a dead character.")
+            None
+          case None if target.isEmpty =>
+            println("\nUnknown target.")
             None
           case None =>
-            println("Unknown command. Type 'help' for a list of available commands.")
+            println("\nUnknown command. Type 'help' for a list of available commands.")
             None
 
     outcomeReport
@@ -181,9 +184,9 @@ class Game:
 
     val monsterInfo =
       for (a,b) <- monsterLocations yield
-        s" $a is at $b distance"
+        s" $a is at $b distance."
 
-    s"There are $monsterAmount monsters here." + monsterInfo
+    s"\nThere are $monsterAmount monsters here." + monsterInfo.mkString + "\n"
   end setMonsters
 
   // decides which monster gets to attack in this round
@@ -209,6 +212,7 @@ class Game:
     println("- help")
 
 
+
   // returns the score of the game.
   def score(characters: Buffer[Character]): String =
     var aScore: Int = 0
@@ -217,7 +221,9 @@ class Game:
     aScore.toString
 
   // welcome and goodbye messages at the beginning and the end of the game.
-  def welcomeMessage: String = welcome + println(help())
+  def welcomeMessage: Unit =
+    println(welcome)
+    help()
   
   def goodbyeMessage: String =
     val extraScore = score(Characters)

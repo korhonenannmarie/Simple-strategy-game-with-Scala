@@ -25,9 +25,9 @@ class Monster(name: String, health: Int, armour: Int, toHit: Int, damagePerAttac
 
   override def attack(target: Character) = 
     if target.takeDamage(this.damagePerAttack, this.toHit, this) then
-      s"the attack by ${this.name} hits! ${target.characterName} takes $damagePerAttack damage."
+      s"The attack by ${this.name} hits! ${target.characterName} takes $damagePerAttack damage."
     else
-      s"the attack by ${this.name} does not hit."
+      s"The attack by ${this.name} does not hit."
 
   override def takeDamage(damage: Int, toHit: Int, attacker: Character): Boolean =
     if armour <= toHit then
